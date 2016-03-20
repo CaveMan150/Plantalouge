@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-import UsersFile.Users;
+import EntityBeans.Users;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import query.DBController;
@@ -19,7 +19,7 @@ public class Controller {
 
     private String username; 
     private String password;
-    private String type;
+    private int type;
     private DBController DBController = new DBController(); 
     /**
      * Creates a new instance of Controller
@@ -44,11 +44,11 @@ public class Controller {
         this.password = password;
     }
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         this.type = type;
     }
 
@@ -64,15 +64,24 @@ public class Controller {
     
     
     
-    public String loginA(){
+    public String login(){
         System.out.println("\n\n\n test test "+username + " -- "+ password);
-        Users user = DBController.login(username, password,0);
+        
+        Users user = DBController.login(username, password,type);
         if(user == null){
             return null;
         }
         else{
             System.out.println("\n\n\n test test ");
-         return "AdminControlPanel.xhtml";   
+            switch(type)
+            {
+                case 0:
+                    return "AdminControlPanel.xhtml"; 
+                case 1:
+                     return "StudentControlPanel.xhtml";
+                default:
+                    return "AdminControlPanel.xhtml";
+            }
         
         }
     }

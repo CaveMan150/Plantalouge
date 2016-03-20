@@ -4,6 +4,10 @@
         <param-name>javax.faces.PROJECT_STAGE</param-name>
         <param-value>Development</param-value>
     </context-param>
+     <context-param>
+    <param-name>primefaces.FONT_AWESOME</param-name>
+    <param-value>true</param-value>
+</context-param>
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
@@ -22,8 +26,7 @@
         <welcome-file>faces/index.xhtml</welcome-file>
     </welcome-file-list>
    
-   
-    <mime-mapping>
+      <mime-mapping>
     <extension>eot</extension>
     <mime-type>application/vnd.ms-fontobject</mime-type>
 </mime-mapping>
@@ -43,9 +46,6 @@
     <extension>svg</extension>  
     <mime-type>image/svg+xml</mime-type>  
 </mime-mapping>
- <context-param>
-    <param-name>primefaces.FONT_AWESOME</param-name>
-    <param-value>true</param-value>
-</context-param>
+
    
 </web-app>

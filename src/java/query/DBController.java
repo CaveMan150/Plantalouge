@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package query;
-import UsersFile.Users;
+import EntityBeans.Users;
 import java.io.Serializable;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;

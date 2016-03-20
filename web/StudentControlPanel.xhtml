@@ -32,35 +32,15 @@
  
     <p:toolbar>
         <f:facet name="left">
-            <p:button outcome="Plants" value="Manage Plants" icon="fa-buysellads">
-</p:button>
-            <p:button outcome="Assigned Tasks" value="Manage Tasks" icon="fa-buysellads">
-</p:button>
-           
-
+         
         </f:facet>
          
     </p:toolbar>
 </h:form>
                 <p:outputPanel style="text-align: center; background-color:white; vertical-align: middle; height:100%; padding-top: 250px;" >
-                   List of plants
-                    Search a plant
-    
+                   
                 </p:outputPanel>
-                <p:dialog header="LogIn" widgetVar="LogIn" modal="true" height="200">
-                    <p:panelGrid columns="2">
-                       
-                        <p:outputLabel value="username:"/>
-                        <p:inputText value="#{controller.username}"/>
-                        <p:outputLabel value="Password:"/>
-                        <p:inputText value="#{controller.password}"/>
-                        <f:facet name="footer">
-                            <p:commandButton action="#{controller.loginA}" ajax="false" value="Sign In"/>
-                            <p:button outcome="index" value="Forgot Password"> </p:button>
-                        </f:facet>
-                    </p:panelGrid>
-                </p:dialog>   
-            
+                
             </h:form>
         </h:body>
 
