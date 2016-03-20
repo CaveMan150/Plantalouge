@@ -7,7 +7,7 @@
 import UsersFile.Users;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import query.DataQuery;
+import query.DBController;
 
 /**
  *
@@ -20,7 +20,7 @@ public class Controller {
     private String username; 
     private String password;
     private String type;
-    private DataQuery q = new DataQuery(); 
+    private DBController DBController = new DBController(); 
     /**
      * Creates a new instance of Controller
      */
@@ -52,19 +52,21 @@ public class Controller {
         this.type = type;
     }
 
-    public DataQuery getQ() {
-        return q;
+    public DBController getDBController() {
+        return DBController;
     }
 
-    public void setQ(DataQuery q) {
-        this.q = q;
+    public void setDBController(DBController DBController) {
+        this.DBController = DBController;
     }
+
+    
     
     
     
     public String loginA(){
         System.out.println("\n\n\n test test "+username + " -- "+ password);
-        Users user = q.login(username, password,0);
+        Users user = DBController.login(username, password,0);
         if(user == null){
             return null;
         }
@@ -76,7 +78,7 @@ public class Controller {
     }
     public String loginS(){
         System.out.println("\n\n\n test test "+username + " -- "+ password);
-        Users user = q.login(username, password,1);
+        Users user = DBController.login(username, password,1);
         if(user == null){
             return null;
         }
@@ -88,7 +90,7 @@ public class Controller {
     }
     public String loginD(){
         System.out.println("\n\n\n test test "+username + " -- "+ password);
-        Users user = q.login(username, password,2);
+        Users user = DBController.login(username, password,2);
         if(user == null){
             return null;
         }

@@ -14,11 +14,11 @@ import javax.persistence.Persistence;
  * @author falbellaihi
  */
 
-public class DataQuery implements Serializable {
+public class DBController implements Serializable {
    EntityManagerFactory emf; 
    EntityManager em ;
 
-    public DataQuery() {
+    public DBController() {
         emf =Persistence.createEntityManagerFactory("PlantaloguePU");
         em =emf.createEntityManager();
      
@@ -46,7 +46,7 @@ public class DataQuery implements Serializable {
        {
            Users loginUser=em.createNamedQuery("Users.findByUsername", Users.class).setParameter("username", user.getUsername()).getSingleResult();
            
-          
+             
          return null;
        } 
        catch (Exception e)
