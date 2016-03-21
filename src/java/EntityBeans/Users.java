@@ -6,16 +6,21 @@
 package EntityBeans;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -33,6 +38,23 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Users implements Serializable {
 
     @Basic(optional = false)
+    @Column(name = "Picture_ID")
+    private String pictureID;
+    @Basic(optional = false)
+    @Column(name = "Name")
+    private String name;
+    @Basic(optional = false)
+    @Lob
+    @Column(name = "Email")
+    private String email;
+    @Basic(optional = false)
+    @Lob
+    @Column(name = "Phone")
+    private String phone;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userID")
+    private Collection<Plants> plantsCollection;
+
+    @Basic(optional = false)
     @Column(name = "type")
     private int type;
 
@@ -48,6 +70,8 @@ public class Users implements Serializable {
     @Basic(optional = false)
     @Column(name = "password")
     private String password;
+
+    
 
     public Users() {
     }
@@ -108,7 +132,7 @@ public class Users implements Serializable {
 
     @Override
     public String toString() {
-        return "UsersFile.Users[ id=" + id + " ]";
+        return " " + id;
     }
 
     public int getType() {
@@ -117,6 +141,47 @@ public class Users implements Serializable {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public String getPictureID() {
+        return pictureID;
+    }
+
+    public void setPictureID(String pictureID) {
+        this.pictureID = pictureID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    @XmlTransient
+    public Collection<Plants> getPlantsCollection() {
+        return plantsCollection;
+    }
+
+    public void setPlantsCollection(Collection<Plants> plantsCollection) {
+        this.plantsCollection = plantsCollection;
     }
     
 }

@@ -20,74 +20,81 @@
 
         <h:body style="background-color: #0a3371; height:100%">
             <h:form>
-            <p:outputPanel style="background-color: #0a3371; color: white; font-size:40px; font-weight: bold; width: 100%; height: 160px;">
-                Plantalogue
-                <br/>
-                <p:outputLabel style="color:white; font-size: 15px;" value=" UMW Biology department"/> 
-            </p:outputPanel>
-            
-
-                 <h:form>     
-    <p:growl id="messages" showDetail="true" />
- 
-    <p:toolbar>
-        <f:facet name="left">
-            <p:button outcome="AdminControlPanel" value="Back to control Panel" icon="fa-buysellads">
-</p:button>
-                <p:button outcome="ManagePlants" value="Remove Plant" icon="fa-buysellads">
-</p:button>
-      <p:button outcome="ManagePlants" value="Edit Plant" icon="fa-buysellads">
-</p:button>
- <p:commandButton value="Print Label" type="button" icon="ui-icon-print" style="display:block;margin-bottom: 20px">
-  <p:printer target="image" /></p:commandButton>
-            <p:graphicImage id="image"  />
-  
-            
-           
-
-        </f:facet>
-         
-    </p:toolbar>
-</h:form>
-                <h:form id="form">
-    <p:treeTable value="#{ttBasicView.root}" var="document">
-        <f:facet name="header">
-            Plant List
-        </f:facet>
-        <p:column headerText="Plant">
-            <h:outputText value="#{document.name}" />
-        </p:column>
-        <p:column headerText="Plant location">
-            <h:outputText value="#{document.size}" />
-        </p:column>
-        <p:column style="width:24px">
-            <p:commandLink oncomplete="PF('documentDialog').show()" title="View Detail" styleClass="ui-icon ui-icon-search">
-                <f:setPropertyActionListener value="#{document}" target="#{ttBasicView.selectedDocument}" />
-            </p:commandLink>
-        </p:column>
-    </p:treeTable>
- 
-    <p:dialog id="dialog" header="Document Detail" showEffect="fade" widgetVar="documentDialog" modal="true" resizable="false">
-        <p:outputPanel id="documentPanel">
-            <p:panelGrid  columns="2" columnClasses="label,value" rendered="#{not empty ttBasicView.selectedDocument}">
-                <h:outputLabel for="name" value="UserName " />
-                <h:outputText id="name" value="#{ttBasicView.selectedDocument.name}" style="font-weight:bold" />
- 
-                <h:outputLabel for="size" value="Type of User: " />
-                <h:outputText id="size" value="#{ttBasicView.selectedDocument.size}" style="font-weight:bold" />
-            </p:panelGrid>
-        </p:outputPanel>
-    </p:dialog>
-       
-</h:form>
-                
-                <p:outputPanel style="text-align: center; background-color:white; vertical-align: middle; height:100%; padding-top: 250px;" >
-                    
-                            plant genus and species included
-                            search a plant tab
+                <p:outputPanel style="background-color: #0a3371; color: white; font-size:40px; font-weight: bold; width: 100%; height: 160px;">
+                    Plantalogue
+                    <br/>
+                    <p:outputLabel style="color:white; font-size: 15px;" value=" UMW Biology department"/> 
                 </p:outputPanel>
-        
-            
+
+
+                <p:growl id="messages" showDetail="true" />
+
+                <p:toolbar>
+                    <f:facet name="left">
+                        <p:button outcome="AdminControlPanel" value="Back To Home" icon="fa-buysellads">
+                        </p:button>
+                        <p:button outcome="ManagePlants" value="Remove Plant" icon="fa-buysellads">
+                        </p:button>
+                        <p:button outcome="ManagePlants" value="Edit Plant" icon="fa-buysellads">
+                        </p:button>
+                        <p:commandButton value="Print Label" type="button" icon="ui-icon-print" >
+                            <p:printer target="image" /></p:commandButton> <p:graphicImage id="image"  />
+                        <p:commandButton value="Search" type="button" onclick="PF('dlg1').show();" />
+                        <p:dialog header="Find a plant" widgetVar="dlg1" minHeight="40">
+                            <p:inputText id="text"  required="true" label="tect" />
+                            <p:button outcome="ManagePlants" value="Search" icon="fa-buysellads">
+                            </p:button>
+
+                        </p:dialog>
+
+                    </f:facet>
+
+
+                </p:toolbar>
+                <p:separator />
+
+                <p:dataTable var="plants" value="#{controller.plantList}">
+
+                    <p:column headerText="Plant ID">
+
+                        <h:outputText value="#{plants.plantID}" />
+
+                    </p:column>
+                    <p:column headerText="Plant genus">
+                        <h:outputText value="#{plants.genus}" />
+                    </p:column>
+                    <p:column headerText="Plant ">
+                        <h:outputText value="#{plants.species}" />
+                    </p:column>
+
+                    <p:column headerText="Plant Label">
+                        <h:outputText value="#{plants.labels}" />
+                    </p:column>
+                    <p:column headerText="Plant table Number ">
+                        <h:outputText value="#{plants.tableNumber}" />
+                    </p:column>
+                    <p:column headerText="Plant table position">
+                        <h:outputText value="#{plants.tablePosition}" />
+                    </p:column>
+                    <p:column headerText="Plant table position">
+                        <h:outputText value="#{plants.tablePosition}" />
+                    </p:column>
+                    <p:column headerText="Plant Task ID">
+                        <h:outputText value="#{plants.taskID}" />
+                    </p:column>
+                    <p:column headerText="Donator User ID">
+                        <h:outputText value="#{plants.userID}" />
+                    </p:column>
+                </p:dataTable>
+
+
+                <p:outputPanel style="text-align: center; background-color:white; vertical-align: middle; height:100%; padding-top: 250px;" >
+
+                    plant genus and species included
+                    search a plant tab
+                </p:outputPanel>
+
+
             </h:form>
         </h:body>
 

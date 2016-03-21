@@ -4,10 +4,15 @@
  * and open the template in the editor.
  */
 
+import EntityBeans.Plants;
+import EntityBeans.Tasks;
 import EntityBeans.Users;
+import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import query.DBController;
+import query.PlantsController;
+import query.TasksController;
+import query.UsersController;
 
 /**
  *
@@ -20,12 +25,41 @@ public class Controller {
     private String username; 
     private String password;
     private int type;
-    private DBController DBController = new DBController(); 
+    private UsersController uController = new UsersController(); 
+    private List<Users> usersList;
+    private List<Plants> plantList;
+    private PlantsController pController = new PlantsController();
+    private List<Tasks> tasksList;
+    private TasksController tController = new TasksController();
+
+    public List<Tasks> getTasksList() {
+        return tasksList;
+    }
+
+    public void setTasksList(List<Tasks> tasksList) {
+        this.tasksList = tasksList;
+    }
+   
+    public List<Plants> getPlantList() {
+        return plantList;
+    }
+
+    public void setPlantList(List<Plants> plantList) {
+        this.plantList = plantList;
+    }
     /**
      * Creates a new instance of Controller
      */
     public Controller() {
         
+    }
+
+    public List<Users> getUsersList() {
+        return usersList;
+    }
+
+    public void setUsersList(List<Users> usersList) {
+        this.usersList = usersList;
     }
 
     public String getUsername() {
@@ -52,14 +86,20 @@ public class Controller {
         this.type = type;
     }
 
-    public DBController getDBController() {
-        return DBController;
-    }
-
-    public void setDBController(DBController DBController) {
-        this.DBController = DBController;
-    }
-
+  public String getType(int t)
+  {
+      switch(t)
+      {
+          case 0:
+              return "Admin";
+          case 1:
+              return "Student";
+          case 2:
+              return "Donator";
+      
+      }
+  return "Unknown";
+  }
     
     
     
@@ -67,46 +107,28 @@ public class Controller {
     public String login(){
         System.out.println("\n\n\n test test "+username + " -- "+ password);
         
-        Users user = DBController.login(username, password,type);
+        Users user = uController.login(username, password,type);
         if(user == null){
             return null;
         }
         else{
             System.out.println("\n\n\n test test ");
+            plantList = pController.findPlantsEntities();
+           
             switch(type)
             {
                 case 0:
+                    usersList=uController.findUsersEntities(); //retrieves all the users from the database
+                    tasksList = tController.findTasksEntities(); // retrives all the tasks from the database
                     return "AdminControlPanel.xhtml"; 
                 case 1:
                      return "StudentControlPanel.xhtml";
+                     
                 default:
                     return "AdminControlPanel.xhtml";
             }
         
         }
     }
-    public String loginS(){
-        System.out.println("\n\n\n test test "+username + " -- "+ password);
-        Users user = DBController.login(username, password,1);
-        if(user == null){
-            return null;
-        }
-        else{
-            System.out.println("\n\n\n test test ");
-         return "StudentControlPanel.xhtml";   
-        
-        }
-    }
-    public String loginD(){
-        System.out.println("\n\n\n test test "+username + " -- "+ password);
-        Users user = DBController.login(username, password,2);
-        if(user == null){
-            return null;
-        }
-        else{
-            System.out.println("\n\n\n test test ");
-         return "AdminControlPanel.xhtml";   
-        
-        }
-    }
+   
 }

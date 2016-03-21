@@ -20,52 +20,53 @@
 
         <h:body style="background-color: #0a3371; height:100%">
             <h:form>
-            <p:outputPanel style="background-color: #0a3371; color: white; font-size:40px; font-weight: bold; width: 100%; height: 160px;">
-                Plantalogue
-                <br/>
-                <p:outputLabel style="color:white; font-size: 15px;" value=" UMW Biology department"/> 
-            </p:outputPanel>
-            
+                <p:outputPanel style="background-color: #0a3371; color: white; font-size:40px; font-weight: bold; width: 100%; height: 160px;">
+                    Plantalogue
+                    <br/>
+                    <p:outputLabel style="color:white; font-size: 15px;" value=" UMW Biology department"/> 
+                </p:outputPanel>
 
-                 <h:form>     
-    <p:growl id="messages" showDetail="true" />
- 
-    <p:toolbar>
-        <f:facet name="left">
-         <p:button outcome="ManageUsers" value="Home" icon="fa-buysellads">
-</p:button>
-            <p:button outcome="ManageUsers" value="Users" icon="fa-buysellads">
-</p:button>
-            <p:button outcome="ManagePlants" value="Plants" icon="fa-buysellads">
-</p:button>
-            <p:button outcome="ManageTasks" value="Work Schedules" icon="fa-buysellads">
-</p:button>
-            <p:button outcome="ManageTasks" value="Calendar" icon="fa-buysellads">
-</p:button>
-           
 
-        </f:facet>
-         
-    </p:toolbar>
-</h:form>
+                <h:form>     
+                    <p:growl id="messages" showDetail="true" />
+
+                    <p:toolbar>
+                        <f:facet name="left">
+                            <p:button outcome="ManageUsers" value="Home" icon="fa-buysellads">
+                            </p:button>
+                            <p:button outcome="ManageUsers" value="Users" icon="fa-buysellads">
+                            </p:button>
+                            <p:button outcome="ManagePlants" value="Plants" icon="fa-buysellads">
+                            </p:button>
+                            <p:button outcome="ManageTasks" value="Work Schedules" icon="fa-buysellads">
+                            </p:button>
+                            <p:button outcome="ManageTasks" value="Calendar" icon="fa-buysellads">
+                            </p:button>
+
+
+                        </f:facet>
+
+                    </p:toolbar>
+                </h:form>
+                 <p:separator />
                 <p:outputPanel style="text-align: center; background-color:white; vertical-align: middle; height:100%; padding-top: 250px;" >
-                   List of plants
-                    
+                    List of plants
+
                     a user update profile page
-                    
-                    
+
+
                     create a new label functionality that u can choose  a plant from drop down list and choose what appears on the label such as
                     species or genus, u can also delete a label
-                    
-                    
+
+
                     create tas tab:
                     enter information about task and choose a plant ot create a task for
-                    
-                    
+
+
                     water amount
                     water time
                     ...
-                    
+
                     work scheduales tab and u can see the tasks
                     and you can select a task and edit it.
                     edit user page
@@ -76,48 +77,48 @@
                     upload pic to the user
                     u can delete user
                     u can update user as admin
-                    
+
                     professor can give feedback 
                     click on username and show tasks history
-                    
-                    
+
+
                     users priv:
-                    
+
                     only plants tab 
                     mywork schedule tab
                     calender tab? maybe call it taks tab
-                    
+
                     plants tab
                     search plants
                     view plant info
-                    
+
                     my work schedule
-                    
+
                     the following taks have been assigned to u by an admin
                     onclick : show task information
                     user can mark task as completed.
-                    
+
                     calender for user showes only thier tasks in it
-                    
-                    
+
+
                     donator can see only view my plants: 
                     can only view plants and
-                    
+
                     <h:form>
-    <p:outputPanel deferred="true">
-        <h3>student "username" Completed task</h3>
-        <p>Finished Plant 1 task</p>
-    </p:outputPanel>
- 
-    <div style="height:600px"></div>
- 
-    
-</h:form>
-    
+                        <p:outputPanel deferred="true">
+                            <h3>student "username" Completed task</h3>
+                            <p>Finished Plant 1 task</p>
+                        </p:outputPanel>
+
+                        <div style="height:600px"></div>
+
+
+                    </h:form>
+
                 </p:outputPanel>
                 <p:dialog header="LogIn" widgetVar="LogIn" modal="true" height="200">
                     <p:panelGrid columns="2">
-                       
+
                         <p:outputLabel value="username:"/>
                         <p:inputText value="#{controller.username}"/>
                         <p:outputLabel value="Password:"/>
@@ -128,7 +129,7 @@
                         </f:facet>
                     </p:panelGrid>
                 </p:dialog>   
-            
+
             </h:form>
         </h:body>
 

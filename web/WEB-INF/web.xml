@@ -6,7 +6,7 @@
     </context-param>
      <context-param>
     <param-name>primefaces.FONT_AWESOME</param-name>
-    <param-value>true</param-value>
+    <param-value>false</param-value>
 </context-param>
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
@@ -38,6 +38,7 @@
     <extension>ttf</extension>  
     <mime-type>application/x-font-ttf</mime-type>  
 </mime-mapping>      
+
 <mime-mapping>  
     <extension>woff</extension>  
     <mime-type>application/x-font-woff</mime-type>  
