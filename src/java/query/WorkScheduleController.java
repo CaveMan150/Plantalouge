@@ -5,26 +5,30 @@
  */
 package query;
 
-import EntityBeans.WorkSchedule;
 import java.io.Serializable;
+import javax.persistence.Query;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import EntityBeans.Tasks;
+import EntityBeans.Users;
+import EntityBeans.WorkSchedule;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
-import javax.persistence.EntityNotFoundException;
 import javax.persistence.Persistence;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import query.exceptions.IllegalOrphanException;
 import query.exceptions.NonexistentEntityException;
 import query.exceptions.PreexistingEntityException;
 
 /**
  *
- * @author falbellaihi
+ * @author Falbe
  */
 public class WorkScheduleController implements Serializable {
 
-    public WorkScheduleController() {
+ public WorkScheduleController() {
                 this.emf = Persistence.createEntityManagerFactory("PlantaloguePU");
 
     }
@@ -34,12 +38,44 @@ public class WorkScheduleController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(WorkSchedule workSchedule) throws PreexistingEntityException, Exception {
+    public void create(WorkSchedule workSchedule) throws IllegalOrphanException, PreexistingEntityException, Exception {
+        List<String> illegalOrphanMessages = null;
+        Tasks tasksOrphanCheck = workSchedule.getTasks();
+        if (tasksOrphanCheck != null) {
+            WorkSchedule oldWorkScheduleOfTasks = tasksOrphanCheck.getWorkSchedule();
+            if (oldWorkScheduleOfTasks != null) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("The Tasks " + tasksOrphanCheck + " already has an item of type WorkSchedule whose tasks column cannot be null. Please make another selection for the tasks field.");
+            }
+        }
+        if (illegalOrphanMessages != null) {
+            throw new IllegalOrphanException(illegalOrphanMessages);
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            Tasks tasks = workSchedule.getTasks();
+            if (tasks != null) {
+                tasks = em.getReference(tasks.getClass(), tasks.getTaskID());
+                workSchedule.setTasks(tasks);
+            }
+            Users userID = workSchedule.getUserID();
+            if (userID != null) {
+                userID = em.getReference(userID.getClass(), userID.getId());
+                workSchedule.setUserID(userID);
+            }
             em.persist(workSchedule);
+            if (tasks != null) {
+                tasks.setWorkSchedule(workSchedule);
+                tasks = em.merge(tasks);
+            }
+            if (userID != null) {
+                userID.getWorkScheduleCollection().add(workSchedule);
+                userID = em.merge(userID);
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             if (findWorkSchedule(workSchedule.getTaskID()) != null) {
@@ -53,12 +89,54 @@ public class WorkScheduleController implements Serializable {
         }
     }
 
-    public void edit(WorkSchedule workSchedule) throws NonexistentEntityException, Exception {
+    public void edit(WorkSchedule workSchedule) throws IllegalOrphanException, NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            WorkSchedule persistentWorkSchedule = em.find(WorkSchedule.class, workSchedule.getTaskID());
+            Tasks tasksOld = persistentWorkSchedule.getTasks();
+            Tasks tasksNew = workSchedule.getTasks();
+            Users userIDOld = persistentWorkSchedule.getUserID();
+            Users userIDNew = workSchedule.getUserID();
+            List<String> illegalOrphanMessages = null;
+            if (tasksNew != null && !tasksNew.equals(tasksOld)) {
+                WorkSchedule oldWorkScheduleOfTasks = tasksNew.getWorkSchedule();
+                if (oldWorkScheduleOfTasks != null) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("The Tasks " + tasksNew + " already has an item of type WorkSchedule whose tasks column cannot be null. Please make another selection for the tasks field.");
+                }
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
+            }
+            if (tasksNew != null) {
+                tasksNew = em.getReference(tasksNew.getClass(), tasksNew.getTaskID());
+                workSchedule.setTasks(tasksNew);
+            }
+            if (userIDNew != null) {
+                userIDNew = em.getReference(userIDNew.getClass(), userIDNew.getId());
+                workSchedule.setUserID(userIDNew);
+            }
             workSchedule = em.merge(workSchedule);
+            if (tasksOld != null && !tasksOld.equals(tasksNew)) {
+                tasksOld.setWorkSchedule(null);
+                tasksOld = em.merge(tasksOld);
+            }
+            if (tasksNew != null && !tasksNew.equals(tasksOld)) {
+                tasksNew.setWorkSchedule(workSchedule);
+                tasksNew = em.merge(tasksNew);
+            }
+            if (userIDOld != null && !userIDOld.equals(userIDNew)) {
+                userIDOld.getWorkScheduleCollection().remove(workSchedule);
+                userIDOld = em.merge(userIDOld);
+            }
+            if (userIDNew != null && !userIDNew.equals(userIDOld)) {
+                userIDNew.getWorkScheduleCollection().add(workSchedule);
+                userIDNew = em.merge(userIDNew);
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -87,6 +165,16 @@ public class WorkScheduleController implements Serializable {
                 workSchedule.getTaskID();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The workSchedule with id " + id + " no longer exists.", enfe);
+            }
+            Tasks tasks = workSchedule.getTasks();
+            if (tasks != null) {
+                tasks.setWorkSchedule(null);
+                tasks = em.merge(tasks);
+            }
+            Users userID = workSchedule.getUserID();
+            if (userID != null) {
+                userID.getWorkScheduleCollection().remove(workSchedule);
+                userID = em.merge(userID);
             }
             em.remove(workSchedule);
             em.getTransaction().commit();

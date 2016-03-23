@@ -114,7 +114,7 @@ public class Labels implements Serializable {
 
     @Override
     public String toString() {
-        return "EntityBeans.Labels[ plantID=" + plantID + " ]";
+        return "" + plantID;
     }
     
 }

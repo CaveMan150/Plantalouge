@@ -37,6 +37,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Users.findByPassword", query = "SELECT u FROM Users u WHERE u.password = :password")})
 public class Users implements Serializable {
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userID")
+    private Collection<WorkSchedule> workScheduleCollection;
+
     @Basic(optional = false)
     @Column(name = "Picture_ID")
     private String pictureID;
@@ -182,6 +185,15 @@ public class Users implements Serializable {
 
     public void setPlantsCollection(Collection<Plants> plantsCollection) {
         this.plantsCollection = plantsCollection;
+    }
+
+    @XmlTransient
+    public Collection<WorkSchedule> getWorkScheduleCollection() {
+        return workScheduleCollection;
+    }
+
+    public void setWorkScheduleCollection(Collection<WorkSchedule> workScheduleCollection) {
+        this.workScheduleCollection = workScheduleCollection;
     }
     
 }

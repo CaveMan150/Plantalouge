@@ -13,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
@@ -23,7 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author falbellaihi
+ * @author Falbe
  */
 @Entity
 @Table(name = "work_schedule")
@@ -33,8 +34,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "WorkSchedule.findByTimein", query = "SELECT w FROM WorkSchedule w WHERE w.timein = :timein"),
     @NamedQuery(name = "WorkSchedule.findByTimeOut", query = "SELECT w FROM WorkSchedule w WHERE w.timeOut = :timeOut"),
     @NamedQuery(name = "WorkSchedule.findByDate", query = "SELECT w FROM WorkSchedule w WHERE w.date = :date"),
-    @NamedQuery(name = "WorkSchedule.findByTaskID", query = "SELECT w FROM WorkSchedule w WHERE w.taskID = :taskID"),
-    @NamedQuery(name = "WorkSchedule.findByUserID", query = "SELECT w FROM WorkSchedule w WHERE w.userID = :userID")})
+    @NamedQuery(name = "WorkSchedule.findByTaskID", query = "SELECT w FROM WorkSchedule w WHERE w.taskID = :taskID")})
 public class WorkSchedule implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -58,12 +58,12 @@ public class WorkSchedule implements Serializable {
     @Basic(optional = false)
     @Column(name = "Task_ID")
     private Integer taskID;
-    @Basic(optional = false)
-    @Column(name = "User_ID")
-    private int userID;
     @JoinColumn(name = "Task_ID", referencedColumnName = "Task_ID", insertable = false, updatable = false)
     @OneToOne(optional = false)
     private Tasks tasks;
+    @JoinColumn(name = "User_ID", referencedColumnName = "ID")
+    @ManyToOne(optional = false)
+    private Users userID;
 
     public WorkSchedule() {
     }
@@ -72,13 +72,12 @@ public class WorkSchedule implements Serializable {
         this.taskID = taskID;
     }
 
-    public WorkSchedule(Integer taskID, Date timein, Date timeOut, Date date, String comments, int userID) {
+    public WorkSchedule(Integer taskID, Date timein, Date timeOut, Date date, String comments) {
         this.taskID = taskID;
         this.timein = timein;
         this.timeOut = timeOut;
         this.date = date;
         this.comments = comments;
-        this.userID = userID;
     }
 
     public Date getTimein() {
@@ -121,20 +120,20 @@ public class WorkSchedule implements Serializable {
         this.taskID = taskID;
     }
 
-    public int getUserID() {
-        return userID;
-    }
-
-    public void setUserID(int userID) {
-        this.userID = userID;
-    }
-
     public Tasks getTasks() {
         return tasks;
     }
 
     public void setTasks(Tasks tasks) {
         this.tasks = tasks;
+    }
+
+    public Users getUserID() {
+        return userID;
+    }
+
+    public void setUserID(Users userID) {
+        this.userID = userID;
     }
 
     @Override

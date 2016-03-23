@@ -10,7 +10,7 @@
             html, body {margin:0; padding:0; height:100 % ; }
         </script>
         <h:head>
-            
+
             <f:facet name="first">
                 <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
                 <title>Manage Users</title>
@@ -34,15 +34,33 @@
                     <f:facet name="left">
                         <p:button outcome="AdminControlPanel" value="Home" icon="ui-icon-home">
                         </p:button>
+                        <p:commandButton rendered="#{controller.username !=null}"  value="Add User" icon="ui-icon-squaresmall-plus" onclick="PF('add').show();"/>
                         <p:commandButton rendered="#{controller.username !=null}" action ="#{controller.logout()}" ajax="false" value="LogOut" icon="ui-icon-power"/>
 
+                        <p:dialog header="Add new user" widgetVar="add" minHeight="40">
+                            <h:outputText value="Enter a new user information" />
+                            <p:panelGrid  columns="2">
 
+                                <p:outputLabel value="User Name"/> 
+                                <p:inputText value="#{controller.newUsername}"/>
+                                <p:outputLabel value="Password"/> 
+                                <p:inputText value="#{controller.newPassword}"/>
+
+                                <p:outputLabel value="Type of user (0-2)"/> 
+                                <p:inputText value="#{controller.newType}"/>
+                                <p:outputLabel value="User Email"/> 
+                                <p:inputText value="#{controller.newEmail}"/>
+                                <p:commandButton value="Submit" action="#{controller.createUser()}" />
+
+                            </p:panelGrid>
+                        </p:dialog>
                     </f:facet>
 
+
                 </p:toolbar>
-                
-                 <p:separator />
-                 <p:dataTable cellSeparator="true" editMode="cell" editable="true" id="UserTable" var="user" value="#{controller.usersList}" paginator="true" rows="10" rowIndexVar="index">
+
+                <p:separator />
+                <p:dataTable cellSeparator="true" editMode="cell" editable="true" id="UserTable" var="user" value="#{controller.usersList}" paginator="true" rows="10" rowIndexVar="index">
                     <p:ajax event ="cellEdit" listener="#{controller.editUser(user)}" update="UserTable"/>
 
                     <p:column headerText="User ID">

@@ -180,7 +180,7 @@ public class Plants implements Serializable {
 
     @Override
     public String toString() {
-        return "EntityBeans.Plants[ plantID=" + plantID + " ]";
+        return "" + plantID;
     }
 
     public Labels getLabels() {

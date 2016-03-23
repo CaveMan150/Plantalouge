@@ -8,6 +8,7 @@ package EntityBeans;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,6 +19,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -37,6 +39,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Tasks.findByStartDate", query = "SELECT t FROM Tasks t WHERE t.startDate = :startDate"),
     @NamedQuery(name = "Tasks.findByEndDate", query = "SELECT t FROM Tasks t WHERE t.endDate = :endDate")})
 public class Tasks implements Serializable {
+
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "tasks")
+    private WorkSchedule workSchedule;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -175,7 +180,15 @@ public class Tasks implements Serializable {
 
     @Override
     public String toString() {
-        return "EntityBeans.Tasks[ taskID=" + taskID + " ]";
+        return "" + taskID;
+    }
+
+    public WorkSchedule getWorkSchedule() {
+        return workSchedule;
+    }
+
+    public void setWorkSchedule(WorkSchedule workSchedule) {
+        this.workSchedule = workSchedule;
     }
     
 }
