@@ -10,7 +10,7 @@
             html, body {margin:0; padding:0; height:100 % ; }
         </script>
         <h:head>
-            <h:outputStylesheet name="webjars/font-awesome/4.4.0/css/font-awesome.css"/>
+            
             <f:facet name="first">
                 <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
                 <title>Manage Users</title>
@@ -19,11 +19,11 @@
         </h:head>
 
         <h:body style="background-color: #0a3371; height:100%">
-            <h:form>
+            <h:form rendered="#{controller.type ==0}">
                 <p:outputPanel style="background-color: #0a3371; color: white; font-size:40px; font-weight: bold; width: 100%; height: 160px;">
                     Plantalogue
                     <br/>
-                    <p:outputLabel style="color:white; font-size: 15px;" value=" UMW Biology department"/> 
+                    <p:outputLabel style="color:white; font-size: 15px;" value=" UMW Biology Department"/> 
                 </p:outputPanel>
 
 
@@ -32,23 +32,95 @@
 
                 <p:toolbar>
                     <f:facet name="left">
-                        <p:button outcome="AdminControlPanel" value="Back to control Panel" icon="fa-buysellads">
+                        <p:button outcome="AdminControlPanel" value="Home" icon="ui-icon-home">
                         </p:button>
+                        <p:commandButton rendered="#{controller.username !=null}" action ="#{controller.logout()}" ajax="false" value="LogOut" icon="ui-icon-power"/>
 
 
                     </f:facet>
 
                 </p:toolbar>
+                
                  <p:separator />
-                <p:dataTable var="user" value="#{controller.usersList}">
-                    <p:column headerText="username">
-                        <h:outputText value="#{user.username}" />
-                    </p:column>
-                    <p:column headerText="user type">
-                        <h:outputText value="#{controller.getType(user.type)}" />
-                    </p:column>
-                </p:dataTable>
+                 <p:dataTable cellSeparator="true" editMode="cell" editable="true" id="UserTable" var="user" value="#{controller.usersList}" paginator="true" rows="10" rowIndexVar="index">
+                    <p:ajax event ="cellEdit" listener="#{controller.editUser(user)}" update="UserTable"/>
 
+                    <p:column headerText="User ID">
+
+                        <h:outputText value="#{user.id}" />
+
+                    </p:column>
+
+                    <p:column headerText="UserName">
+                        <p:cellEditor>
+
+                            <f:facet name="output"><h:outputText value="#{user.username}" /></f:facet>
+                            <f:facet name="input"> <h:inputText value="#{user.username}" /></f:facet>
+
+                        </p:cellEditor>
+
+                    </p:column>
+
+
+                    <p:column headerText="User type">
+                        <p:cellEditor>
+
+                            <f:facet name="output"><h:outputText value="#{controller.getType(user.type)}" /> </f:facet>
+                            <f:facet name="input"> <h:inputText value="#{user.type}" /></f:facet>
+
+                        </p:cellEditor>
+
+                    </p:column>
+
+
+
+                    <p:column headerText="Phone">
+                        <p:cellEditor>
+
+                            <f:facet name="output"> <h:outputText value="#{user.phone}" /></f:facet>
+                            <f:facet name="input"> <h:inputText value="#{user.phone}" /></f:facet>
+
+                        </p:cellEditor>
+
+                    </p:column>
+
+
+                    <p:column headerText="Email ">
+                        <p:cellEditor>
+
+                            <f:facet name="output"> <h:outputText value="#{user.email}" /></f:facet>
+                            <f:facet name="input"> <h:inputText value="#{user.email}" /></f:facet>
+
+                        </p:cellEditor>
+
+                    </p:column>
+
+
+                    <p:column headerText="Name">
+                        <p:cellEditor>
+
+                            <f:facet name="output"> <h:outputText value="#{user.name}"/> </f:facet>
+                            <f:facet name="input"> <h:inputText value="#{user.name}" /></f:facet>
+
+                        </p:cellEditor>
+                    </p:column>
+
+
+
+                    <p:column headerText="Picture">
+                        <p:graphicImage name="#{user.pictureID}" width="40"/>
+                    </p:column>
+                    <p:column>
+
+
+                        <p:commandButton id="deleteButton" icon="ui-icon-trash"
+                                         title="Remove"
+                                         actionListener="#{controller.removePlant(plants.plantID, index)}" update="UserTable"
+                                         ajax="false"/>
+
+                    </p:column>
+
+                </p:dataTable>
 
 
                 <p:outputPanel style="text-align: center; background-color:white; vertical-align: middle; height:100%; padding-top: 250px;" >
@@ -58,6 +130,7 @@
 
 
             </h:form>
+            <p:outputLabel rendered="#{controller.type !=0}" value="OOPS!"/>
         </h:body>
 
     </f:view>

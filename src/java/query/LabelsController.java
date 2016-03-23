@@ -16,18 +16,21 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import query.exceptions.IllegalOrphanException;
 import query.exceptions.NonexistentEntityException;
 import query.exceptions.PreexistingEntityException;
 
 /**
  *
- * @author Falbe
+ * @author falbellaihi
  */
 public class LabelsController implements Serializable {
 
-    public LabelsController(EntityManagerFactory emf) {
-        this.emf = emf;
+    public LabelsController() {
+
+               this.emf = Persistence.createEntityManagerFactory("PlantaloguePU");
+
     }
     private EntityManagerFactory emf = null;
 

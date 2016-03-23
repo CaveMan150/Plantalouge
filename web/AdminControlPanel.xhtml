@@ -10,7 +10,6 @@
             html, body {margin:0; padding:0; height:100 % ; }
         </script>
         <h:head>
-            <h:outputStylesheet name="webjars/font-awesome/4.4.0/css/font-awesome.css"/>
             <f:facet name="first">
                 <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
                 <title>PrimeFaces</title>
@@ -23,7 +22,7 @@
                 <p:outputPanel style="background-color: #0a3371; color: white; font-size:40px; font-weight: bold; width: 100%; height: 160px;">
                     Plantalogue
                     <br/>
-                    <p:outputLabel style="color:white; font-size: 15px;" value=" UMW Biology department"/> 
+                    <p:outputLabel style="color:white; font-size: 15px;" value=" UMW Biology Department"/> 
                 </p:outputPanel>
 
 
@@ -32,16 +31,17 @@
 
                     <p:toolbar>
                         <f:facet name="left">
-                            <p:button outcome="ManageUsers" value="Home" icon="fa-buysellads">
+                            <p:button outcome="AdminControlPanel" value="Home" icon="ui-icon-home">
                             </p:button>
-                            <p:button outcome="ManageUsers" value="Users" icon="fa-buysellads">
+                            <p:button outcome="ManageUsers" value="Users" icon="ui-icon-person">
                             </p:button>
-                            <p:button outcome="ManagePlants" value="Plants" icon="fa-buysellads">
+                            <p:button outcome="ManagePlants" value="Plants" icon="ui-icon-gear">
                             </p:button>
-                            <p:button outcome="ManageTasks" value="Work Schedules" icon="fa-buysellads">
+                            <p:button outcome="WorkSchedules" value="Work Schedules" icon="ui-icon-clock">
                             </p:button>
-                            <p:button outcome="ManageTasks" value="Calendar" icon="fa-buysellads">
+                            <p:button outcome="WorkSchedules" value="Calendar" icon="ui-icon-calendar">
                             </p:button>
+                            <p:commandButton  rendered="#{controller.username !=null}" action ="#{controller.logout()}" ajax="false" value="LogOut" icon="ui-icon-power"/>
 
 
                         </f:facet>

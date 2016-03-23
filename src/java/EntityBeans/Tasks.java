@@ -6,27 +6,26 @@
 package EntityBeans;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Falbe
+ * @author falbellaihi
  */
 @Entity
 @Table(name = "tasks")
@@ -41,6 +40,7 @@ public class Tasks implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "Task_ID")
     private Integer taskID;
@@ -68,10 +68,9 @@ public class Tasks implements Serializable {
     @Lob
     @Column(name = "Other_Notes")
     private String otherNotes;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "tasks")
-    private WorkSchedule workSchedule;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "taskID")
-    private Collection<Plants> plantsCollection;
+    @JoinColumn(name = "Plant_ID", referencedColumnName = "Plant_ID")
+    @ManyToOne(optional = false)
+    private Plants plantID;
 
     public Tasks() {
     }
@@ -146,21 +145,12 @@ public class Tasks implements Serializable {
         this.otherNotes = otherNotes;
     }
 
-    public WorkSchedule getWorkSchedule() {
-        return workSchedule;
+    public Plants getPlantID() {
+        return plantID;
     }
 
-    public void setWorkSchedule(WorkSchedule workSchedule) {
-        this.workSchedule = workSchedule;
-    }
-
-    @XmlTransient
-    public Collection<Plants> getPlantsCollection() {
-        return plantsCollection;
-    }
-
-    public void setPlantsCollection(Collection<Plants> plantsCollection) {
-        this.plantsCollection = plantsCollection;
+    public void setPlantID(Plants plantID) {
+        this.plantID = plantID;
     }
 
     @Override
@@ -185,7 +175,7 @@ public class Tasks implements Serializable {
 
     @Override
     public String toString() {
-        return  "" +taskID ;
+        return "EntityBeans.Tasks[ taskID=" + taskID + " ]";
     }
     
 }

@@ -151,5 +151,11 @@ public class UsersController implements Serializable {
             return null;
        }
        
+   
+      
    }
+     public void logout (String username){
+         EntityManager em = getEntityManager();
+         em.remove(em);
+     }
 }

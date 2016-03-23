@@ -10,27 +10,23 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import EntityBeans.WorkSchedule;
 import EntityBeans.Plants;
 import EntityBeans.Tasks;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import query.exceptions.IllegalOrphanException;
 import query.exceptions.NonexistentEntityException;
-import query.exceptions.PreexistingEntityException;
 
 /**
  *
- * @author Falbe
+ * @author falbellaihi
  */
 public class TasksController implements Serializable {
 
     public TasksController() {
-        this.emf = Persistence.createEntityManagerFactory("PlantaloguePU");
+               this.emf = Persistence.createEntityManagerFactory("PlantaloguePU");
+
     }
     private EntityManagerFactory emf = null;
 
@@ -38,50 +34,22 @@ public class TasksController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Tasks tasks) throws PreexistingEntityException, Exception {
-        if (tasks.getPlantsCollection() == null) {
-            tasks.setPlantsCollection(new ArrayList<Plants>());
-        }
+    public void create(Tasks tasks) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            WorkSchedule workSchedule = tasks.getWorkSchedule();
-            if (workSchedule != null) {
-                workSchedule = em.getReference(workSchedule.getClass(), workSchedule.getTaskID());
-                tasks.setWorkSchedule(workSchedule);
+            Plants plantID = tasks.getPlantID();
+            if (plantID != null) {
+                plantID = em.getReference(plantID.getClass(), plantID.getPlantID());
+                tasks.setPlantID(plantID);
             }
-            Collection<Plants> attachedPlantsCollection = new ArrayList<Plants>();
-            for (Plants plantsCollectionPlantsToAttach : tasks.getPlantsCollection()) {
-                plantsCollectionPlantsToAttach = em.getReference(plantsCollectionPlantsToAttach.getClass(), plantsCollectionPlantsToAttach.getPlantID());
-                attachedPlantsCollection.add(plantsCollectionPlantsToAttach);
-            }
-            tasks.setPlantsCollection(attachedPlantsCollection);
             em.persist(tasks);
-            if (workSchedule != null) {
-                Tasks oldTasksOfWorkSchedule = workSchedule.getTasks();
-                if (oldTasksOfWorkSchedule != null) {
-                    oldTasksOfWorkSchedule.setWorkSchedule(null);
-                    oldTasksOfWorkSchedule = em.merge(oldTasksOfWorkSchedule);
-                }
-                workSchedule.setTasks(tasks);
-                workSchedule = em.merge(workSchedule);
-            }
-            for (Plants plantsCollectionPlants : tasks.getPlantsCollection()) {
-                Tasks oldTaskIDOfPlantsCollectionPlants = plantsCollectionPlants.getTaskID();
-                plantsCollectionPlants.setTaskID(tasks);
-                plantsCollectionPlants = em.merge(plantsCollectionPlants);
-                if (oldTaskIDOfPlantsCollectionPlants != null) {
-                    oldTaskIDOfPlantsCollectionPlants.getPlantsCollection().remove(plantsCollectionPlants);
-                    oldTaskIDOfPlantsCollectionPlants = em.merge(oldTaskIDOfPlantsCollectionPlants);
-                }
+            if (plantID != null) {
+                plantID.getTasksCollection().add(tasks);
+                plantID = em.merge(plantID);
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findTasks(tasks.getTaskID()) != null) {
-                throw new PreexistingEntityException("Tasks " + tasks + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -89,65 +57,26 @@ public class TasksController implements Serializable {
         }
     }
 
-    public void edit(Tasks tasks) throws IllegalOrphanException, NonexistentEntityException, Exception {
+    public void edit(Tasks tasks) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             Tasks persistentTasks = em.find(Tasks.class, tasks.getTaskID());
-            WorkSchedule workScheduleOld = persistentTasks.getWorkSchedule();
-            WorkSchedule workScheduleNew = tasks.getWorkSchedule();
-            Collection<Plants> plantsCollectionOld = persistentTasks.getPlantsCollection();
-            Collection<Plants> plantsCollectionNew = tasks.getPlantsCollection();
-            List<String> illegalOrphanMessages = null;
-            if (workScheduleOld != null && !workScheduleOld.equals(workScheduleNew)) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("You must retain WorkSchedule " + workScheduleOld + " since its tasks field is not nullable.");
+            Plants plantIDOld = persistentTasks.getPlantID();
+            Plants plantIDNew = tasks.getPlantID();
+            if (plantIDNew != null) {
+                plantIDNew = em.getReference(plantIDNew.getClass(), plantIDNew.getPlantID());
+                tasks.setPlantID(plantIDNew);
             }
-            for (Plants plantsCollectionOldPlants : plantsCollectionOld) {
-                if (!plantsCollectionNew.contains(plantsCollectionOldPlants)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain Plants " + plantsCollectionOldPlants + " since its taskID field is not nullable.");
-                }
-            }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
-            }
-            if (workScheduleNew != null) {
-                workScheduleNew = em.getReference(workScheduleNew.getClass(), workScheduleNew.getTaskID());
-                tasks.setWorkSchedule(workScheduleNew);
-            }
-            Collection<Plants> attachedPlantsCollectionNew = new ArrayList<Plants>();
-            for (Plants plantsCollectionNewPlantsToAttach : plantsCollectionNew) {
-                plantsCollectionNewPlantsToAttach = em.getReference(plantsCollectionNewPlantsToAttach.getClass(), plantsCollectionNewPlantsToAttach.getPlantID());
-                attachedPlantsCollectionNew.add(plantsCollectionNewPlantsToAttach);
-            }
-            plantsCollectionNew = attachedPlantsCollectionNew;
-            tasks.setPlantsCollection(plantsCollectionNew);
             tasks = em.merge(tasks);
-            if (workScheduleNew != null && !workScheduleNew.equals(workScheduleOld)) {
-                Tasks oldTasksOfWorkSchedule = workScheduleNew.getTasks();
-                if (oldTasksOfWorkSchedule != null) {
-                    oldTasksOfWorkSchedule.setWorkSchedule(null);
-                    oldTasksOfWorkSchedule = em.merge(oldTasksOfWorkSchedule);
-                }
-                workScheduleNew.setTasks(tasks);
-                workScheduleNew = em.merge(workScheduleNew);
+            if (plantIDOld != null && !plantIDOld.equals(plantIDNew)) {
+                plantIDOld.getTasksCollection().remove(tasks);
+                plantIDOld = em.merge(plantIDOld);
             }
-            for (Plants plantsCollectionNewPlants : plantsCollectionNew) {
-                if (!plantsCollectionOld.contains(plantsCollectionNewPlants)) {
-                    Tasks oldTaskIDOfPlantsCollectionNewPlants = plantsCollectionNewPlants.getTaskID();
-                    plantsCollectionNewPlants.setTaskID(tasks);
-                    plantsCollectionNewPlants = em.merge(plantsCollectionNewPlants);
-                    if (oldTaskIDOfPlantsCollectionNewPlants != null && !oldTaskIDOfPlantsCollectionNewPlants.equals(tasks)) {
-                        oldTaskIDOfPlantsCollectionNewPlants.getPlantsCollection().remove(plantsCollectionNewPlants);
-                        oldTaskIDOfPlantsCollectionNewPlants = em.merge(oldTaskIDOfPlantsCollectionNewPlants);
-                    }
-                }
+            if (plantIDNew != null && !plantIDNew.equals(plantIDOld)) {
+                plantIDNew.getTasksCollection().add(tasks);
+                plantIDNew = em.merge(plantIDNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -166,7 +95,7 @@ public class TasksController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
+    public void destroy(Integer id) throws NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -178,23 +107,10 @@ public class TasksController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The tasks with id " + id + " no longer exists.", enfe);
             }
-            List<String> illegalOrphanMessages = null;
-            WorkSchedule workScheduleOrphanCheck = tasks.getWorkSchedule();
-            if (workScheduleOrphanCheck != null) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This Tasks (" + tasks + ") cannot be destroyed since the WorkSchedule " + workScheduleOrphanCheck + " in its workSchedule field has a non-nullable tasks field.");
-            }
-            Collection<Plants> plantsCollectionOrphanCheck = tasks.getPlantsCollection();
-            for (Plants plantsCollectionOrphanCheckPlants : plantsCollectionOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This Tasks (" + tasks + ") cannot be destroyed since the Plants " + plantsCollectionOrphanCheckPlants + " in its plantsCollection field has a non-nullable taskID field.");
-            }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
+            Plants plantID = tasks.getPlantID();
+            if (plantID != null) {
+                plantID.getTasksCollection().remove(tasks);
+                plantID = em.merge(plantID);
             }
             em.remove(tasks);
             em.getTransaction().commit();

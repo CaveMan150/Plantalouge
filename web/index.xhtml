@@ -44,17 +44,18 @@
                    
 
                 </p:outputPanel>
-                <p:dialog header="Log In" widgetVar="LogIn" modal="true" height="200">
-                    <p:panelGrid columns="2">
+                <p:dialog header="Log In" widgetVar="LogIn" modal="true" height="200" resizable="false" >
+                    <p:messages id="msgs" autoUpdate="true"/>
+                    <p:panelGrid columns="2" id="sign">
                        
                         <p:outputLabel value="username:"/>
-                        <p:inputText value="#{controller.username}"/>
+                        <p:inputText required="true" value="#{controller.username}" requiredMessage="User name is required"/>
                         <p:outputLabel value="Password:"/>
-                        <p:inputText value="#{controller.password}"/>
+                        <p:password value="#{controller.password}" required="true" requiredMessage="Password is required"/>
                         <f:facet name="footer">
-                            <p:commandButton action="#{controller.login()}" ajax="false" value="Sign In"/>
+                            <p:commandButton action="#{controller.login()}" value="Sign In" update="sign msgs"/>
                             
-                            <p:button outcome="index" value="Forgot Password"> </p:button>
+                            <p:button  value="Forgot Password"> </p:button>
                         </f:facet>
                     </p:panelGrid>
                 </p:dialog>   

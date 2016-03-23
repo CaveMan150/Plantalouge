@@ -6,6 +6,7 @@
 package EntityBeans;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,13 +19,15 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Falbe
+ * @author falbellaihi
  */
 @Entity
 @Table(name = "plants")
@@ -38,6 +41,12 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Plants.findByTableNumber", query = "SELECT p FROM Plants p WHERE p.tableNumber = :tableNumber"),
     @NamedQuery(name = "Plants.findByTablePosition", query = "SELECT p FROM Plants p WHERE p.tablePosition = :tablePosition")})
 public class Plants implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "plantID")
+    private Collection<Tasks> tasksCollection;
+
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "plants")
+    private Labels labels;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -67,11 +76,6 @@ public class Plants implements Serializable {
     @JoinColumn(name = "User_ID", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Users userID;
-    @JoinColumn(name = "Task_ID", referencedColumnName = "Task_ID")
-    @ManyToOne(optional = false)
-    private Tasks taskID;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "plants")
-    private Labels labels;
 
     public Plants() {
     }
@@ -154,22 +158,6 @@ public class Plants implements Serializable {
         this.userID = userID;
     }
 
-    public Tasks getTaskID() {
-        return taskID;
-    }
-
-    public void setTaskID(Tasks taskID) {
-        this.taskID = taskID;
-    }
-
-    public Labels getLabels() {
-        return labels;
-    }
-
-    public void setLabels(Labels labels) {
-        this.labels = labels;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -193,6 +181,23 @@ public class Plants implements Serializable {
     @Override
     public String toString() {
         return "EntityBeans.Plants[ plantID=" + plantID + " ]";
+    }
+
+    public Labels getLabels() {
+        return labels;
+    }
+
+    public void setLabels(Labels labels) {
+        this.labels = labels;
+    }
+
+    @XmlTransient
+    public Collection<Tasks> getTasksCollection() {
+        return tasksCollection;
+    }
+
+    public void setTasksCollection(Collection<Tasks> tasksCollection) {
+        this.tasksCollection = tasksCollection;
     }
     
 }

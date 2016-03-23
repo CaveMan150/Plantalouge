@@ -5,30 +5,26 @@
  */
 package query;
 
+import EntityBeans.Plants;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import EntityBeans.Users;
-import EntityBeans.Tasks;
-import EntityBeans.Labels;
-import EntityBeans.Plants;
-import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import query.exceptions.IllegalOrphanException;
 import query.exceptions.NonexistentEntityException;
 
 /**
  *
- * @author Falbe
+ * @author falbellaihi
  */
 public class PlantsController implements Serializable {
 
-    public PlantsController() {
+     public PlantsController() {
         this.emf = Persistence.createEntityManagerFactory("PlantaloguePU");
     }
     private EntityManagerFactory emf = null;
@@ -47,33 +43,10 @@ public class PlantsController implements Serializable {
                 userID = em.getReference(userID.getClass(), userID.getId());
                 plants.setUserID(userID);
             }
-            Tasks taskID = plants.getTaskID();
-            if (taskID != null) {
-                taskID = em.getReference(taskID.getClass(), taskID.getTaskID());
-                plants.setTaskID(taskID);
-            }
-            Labels labels = plants.getLabels();
-            if (labels != null) {
-                labels = em.getReference(labels.getClass(), labels.getPlantID());
-                plants.setLabels(labels);
-            }
             em.persist(plants);
             if (userID != null) {
                 userID.getPlantsCollection().add(plants);
                 userID = em.merge(userID);
-            }
-            if (taskID != null) {
-                taskID.getPlantsCollection().add(plants);
-                taskID = em.merge(taskID);
-            }
-            if (labels != null) {
-                Plants oldPlantsOfLabels = labels.getPlants();
-                if (oldPlantsOfLabels != null) {
-                    oldPlantsOfLabels.setLabels(null);
-                    oldPlantsOfLabels = em.merge(oldPlantsOfLabels);
-                }
-                labels.setPlants(plants);
-                labels = em.merge(labels);
             }
             em.getTransaction().commit();
         } finally {
@@ -83,7 +56,7 @@ public class PlantsController implements Serializable {
         }
     }
 
-    public void edit(Plants plants) throws IllegalOrphanException, NonexistentEntityException, Exception {
+    public void edit(Plants plants) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -91,31 +64,9 @@ public class PlantsController implements Serializable {
             Plants persistentPlants = em.find(Plants.class, plants.getPlantID());
             Users userIDOld = persistentPlants.getUserID();
             Users userIDNew = plants.getUserID();
-            Tasks taskIDOld = persistentPlants.getTaskID();
-            Tasks taskIDNew = plants.getTaskID();
-            Labels labelsOld = persistentPlants.getLabels();
-            Labels labelsNew = plants.getLabels();
-            List<String> illegalOrphanMessages = null;
-            if (labelsOld != null && !labelsOld.equals(labelsNew)) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("You must retain Labels " + labelsOld + " since its plants field is not nullable.");
-            }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
-            }
             if (userIDNew != null) {
                 userIDNew = em.getReference(userIDNew.getClass(), userIDNew.getId());
                 plants.setUserID(userIDNew);
-            }
-            if (taskIDNew != null) {
-                taskIDNew = em.getReference(taskIDNew.getClass(), taskIDNew.getTaskID());
-                plants.setTaskID(taskIDNew);
-            }
-            if (labelsNew != null) {
-                labelsNew = em.getReference(labelsNew.getClass(), labelsNew.getPlantID());
-                plants.setLabels(labelsNew);
             }
             plants = em.merge(plants);
             if (userIDOld != null && !userIDOld.equals(userIDNew)) {
@@ -125,23 +76,6 @@ public class PlantsController implements Serializable {
             if (userIDNew != null && !userIDNew.equals(userIDOld)) {
                 userIDNew.getPlantsCollection().add(plants);
                 userIDNew = em.merge(userIDNew);
-            }
-            if (taskIDOld != null && !taskIDOld.equals(taskIDNew)) {
-                taskIDOld.getPlantsCollection().remove(plants);
-                taskIDOld = em.merge(taskIDOld);
-            }
-            if (taskIDNew != null && !taskIDNew.equals(taskIDOld)) {
-                taskIDNew.getPlantsCollection().add(plants);
-                taskIDNew = em.merge(taskIDNew);
-            }
-            if (labelsNew != null && !labelsNew.equals(labelsOld)) {
-                Plants oldPlantsOfLabels = labelsNew.getPlants();
-                if (oldPlantsOfLabels != null) {
-                    oldPlantsOfLabels.setLabels(null);
-                    oldPlantsOfLabels = em.merge(oldPlantsOfLabels);
-                }
-                labelsNew.setPlants(plants);
-                labelsNew = em.merge(labelsNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -160,7 +94,7 @@ public class PlantsController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
+    public void destroy(Integer id) throws NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -172,26 +106,10 @@ public class PlantsController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The plants with id " + id + " no longer exists.", enfe);
             }
-            List<String> illegalOrphanMessages = null;
-            Labels labelsOrphanCheck = plants.getLabels();
-            if (labelsOrphanCheck != null) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This Plants (" + plants + ") cannot be destroyed since the Labels " + labelsOrphanCheck + " in its labels field has a non-nullable plants field.");
-            }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
-            }
             Users userID = plants.getUserID();
             if (userID != null) {
                 userID.getPlantsCollection().remove(plants);
                 userID = em.merge(userID);
-            }
-            Tasks taskID = plants.getTaskID();
-            if (taskID != null) {
-                taskID.getPlantsCollection().remove(plants);
-                taskID = em.merge(taskID);
             }
             em.remove(plants);
             em.getTransaction().commit();

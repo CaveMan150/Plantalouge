@@ -10,7 +10,6 @@
             html, body {margin:0; padding:0; height:100 % ; }
         </script>
         <h:head>
-            <h:outputStylesheet name="webjars/font-awesome/4.4.0/css/font-awesome.css"/>
             <f:facet name="first">
                 <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
                 <title>Manage Plants</title>
@@ -19,11 +18,11 @@
         </h:head>
 
         <h:body style="background-color: #0a3371; height:100%">
-            <h:form>
+            <h:form rendered="#{controller.type ==0}">
                 <p:outputPanel style="background-color: #0a3371; color: white; font-size:40px; font-weight: bold; width: 100%; height: 160px;">
                     Plantalogue
                     <br/>
-                    <p:outputLabel style="color:white; font-size: 15px;" value=" UMW Biology department"/> 
+                    <p:outputLabel style="color:white; font-size: 15px;" value=" UMW Biology Department"/> 
                 </p:outputPanel>
 
 
@@ -31,21 +30,19 @@
 
                 <p:toolbar>
                     <f:facet name="left">
-                        <p:button outcome="AdminControlPanel" value="Back To Home" icon="fa-buysellads">
+                        <p:button outcome="AdminControlPanel" value="Home" icon="ui-icon-home" >
                         </p:button>
-                        <p:button outcome="ManagePlants" value="Remove Plant" icon="fa-buysellads">
-                        </p:button>
-                        <p:button outcome="ManagePlants" value="Edit Plant" icon="fa-buysellads">
-                        </p:button>
+
                         <p:commandButton value="Print Label" type="button" icon="ui-icon-print" >
                             <p:printer target="image" /></p:commandButton> <p:graphicImage id="image"  />
-                        <p:commandButton value="Search" type="button" onclick="PF('dlg1').show();" />
-                        <p:dialog header="Find a plant" widgetVar="dlg1" minHeight="40">
-                            <p:inputText id="text"  required="true" label="tect" />
-                            <p:button outcome="ManagePlants" value="Search" icon="fa-buysellads">
+                        <p:commandButton value="Search" type="button"  onclick="PF('dlg1').show();" />
+                        <p:dialog header="Find a plant" widgetVar="dlg1" minHeight="40" resizable="false">
+                            <p:inputText id="text"  required="false" label="text" />
+                            <p:button outcome="ManagePlants" value="Search" icon="ui-icon-search">
                             </p:button>
-
                         </p:dialog>
+                        <p:commandButton rendered="#{controller.username !=null}" action ="#{controller.logout()}" ajax="false" value="LogOut" icon="ui-icon-power"/>
+
 
                     </f:facet>
 
@@ -53,49 +50,136 @@
                 </p:toolbar>
                 <p:separator />
 
-                <p:dataTable var="plants" value="#{controller.plantList}">
+                <p:dataTable cellSeparator="true" editMode="cell" editable="true" id="PlantsTable" var="plants" value="#{controller.plantList}" paginator="true" rows="10" rowIndexVar="index">
+                    <p:ajax event ="cellEdit" listener="#{controller.editPlant(plants)}" update="PlantsTable"/>
 
                     <p:column headerText="Plant ID">
 
                         <h:outputText value="#{plants.plantID}" />
 
                     </p:column>
+
                     <p:column headerText="Plant genus">
-                        <h:outputText value="#{plants.genus}" />
-                    </p:column>
-                    <p:column headerText="Plant ">
-                        <h:outputText value="#{plants.species}" />
+                        <p:cellEditor>
+
+                            <f:facet name="output"><h:outputText value="#{plants.genus}" /></f:facet>
+                            <f:facet name="input"> <h:inputText value="#{plants.genus}" /></f:facet>
+
+                        </p:cellEditor>
+
                     </p:column>
 
+
+                    <p:column headerText="Plant ">
+                        <p:cellEditor>
+
+                            <f:facet name="output"><h:outputText value="#{plants.species}" /> </f:facet>
+                            <f:facet name="input"> <h:inputText value="#{plants.species}" /></f:facet>
+
+                        </p:cellEditor>
+
+                    </p:column>
+
+
+
                     <p:column headerText="Plant Label">
-                        <h:outputText value="#{plants.labels}" />
+                        <p:cellEditor>
+
+                            <f:facet name="output"> <h:outputText value="#{plants.labels.labelName}" /></f:facet>
+                            <f:facet name="input"> <h:inputText value="#{plants.labels.labelName}" /></f:facet>
+
+                        </p:cellEditor>
+
                     </p:column>
+
+
                     <p:column headerText="Plant table Number ">
-                        <h:outputText value="#{plants.tableNumber}" />
+                        <p:cellEditor>
+
+                            <f:facet name="output"> <h:outputText value="#{plants.tableNumber}" /></f:facet>
+                            <f:facet name="input"> <h:inputText value="#{plants.tableNumber}" /></f:facet>
+
+                        </p:cellEditor>
+
                     </p:column>
+
+
                     <p:column headerText="Plant table position">
-                        <h:outputText value="#{plants.tablePosition}" />
+                        <p:cellEditor>
+
+                            <f:facet name="output"> <h:outputText value="#{plants.tablePosition}"/> </f:facet>
+                            <f:facet name="input"> <h:inputText value="#{plants.tablePosition}" /></f:facet>
+
+                        </p:cellEditor>
                     </p:column>
-                    <p:column headerText="Plant table position">
-                        <h:outputText value="#{plants.tablePosition}" />
+
+
+
+                    <p:column headerText="Other Notes">
+                        <p:cellEditor>
+                            <f:facet name="output"> <h:outputText value="#{plants.otherNotes}" /></f:facet>
+                            <f:facet name="input"> <h:inputText value="#{plants.otherNotes}" /></f:facet>
+
+                        </p:cellEditor>
                     </p:column>
-                    <p:column headerText="Plant Task ID">
-                        <h:outputText value="#{plants.taskID}" />
-                    </p:column>
+
+
+
+                   
+
+
                     <p:column headerText="Donator User ID">
                         <h:outputText value="#{plants.userID}" />
                     </p:column>
-                </p:dataTable>
+                    <p:column>
 
+
+                        <p:commandButton  icon="ui-icon-trash"
+                                         title="Remove"
+                                         actionListener="#{controller.removePlant(plants.plantID, index)}" update="PlantsTable"
+                                         ajax="false"/>
+
+                    </p:column>
+                    <p:column>
+
+
+                        <p:commandButton icon="ui-icon-task" title="Create Task" onclick="PF('TaskDG').show();"  >
+                            <f:setPropertyActionListener target="#{controller.selectedPlant}" value="#{plants}"/>
+                        </p:commandButton>
+
+                    </p:column>
+
+                </p:dataTable>
+                <p:dialog widgetVar="TaskDG" >
+                    <p:panelGrid  columns="2">
+                        <p:outputLabel value="Water Amount"/> 
+                        <p:inputText value="#{controller.waterAmount}"/>
+                        <p:outputLabel value="Water Time"/> 
+                        <p:calendar  pattern="HH:mm" timeOnly="true" value="#{controller.waterTime}"/>
+
+                        <p:outputLabel value="Fertilizer Amount"/> 
+                        <p:inputText value="#{controller.fertilizerAmount}"/>
+
+                        <p:outputLabel value="Start Date"/>                         
+                        <p:calendar  value="#{controller.startDate}"/>
+
+                        <p:outputLabel value="Expected End Date"/> 
+                        <p:calendar value="#{controller.expectedEndDate}"/>
+
+                        <p:outputLabel value="Other Notes"/>
+                        <p:inputText value="#{controller.otherNotes}"/>
+                        <p:commandButton value="Submit" action="#{controller.createTask()}" />
+
+                    </p:panelGrid>
+                </p:dialog>
 
                 <p:outputPanel style="text-align: center; background-color:white; vertical-align: middle; height:100%; padding-top: 250px;" >
 
-                    plant genus and species included
-                    search a plant tab
                 </p:outputPanel>
 
 
             </h:form>
+            <p:outputLabel  style="color:white" rendered="#{controller.type !=0}" value="OOPs!"/>
         </h:body>
 
     </f:view>
