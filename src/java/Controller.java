@@ -377,6 +377,8 @@ public class Controller {
                     return "AdminControlPanel.xhtml";
                 case 1:
                     return "StudentControlPanel.xhtml";
+                case 2:
+                    return "dontatorHome.xhtml";
 
                 default:
                     return "AdminControlPanel.xhtml";

@@ -31,13 +31,12 @@
 
                     <p:toolbar>
                         <f:facet name="left">
-                            <p:button outcome="StudentControlPanel" value="Home" icon="ui-icon-home">
+                            <p:button outcome="dontatorHome" value="Home" icon="ui-icon-home">
                             </p:button>
                             
-                            <p:button outcome="StudentPlantPage" value="Plants" icon="ui-icon-gear">
+                            <p:button outcome="MyPlants" value="My Plants" icon="ui-icon-gear">
                             </p:button>
-                            <p:button outcome="StudentWork" value="My Work Schedules" icon="ui-icon-clock">
-                            </p:button>
+                           
                            
                             <p:commandButton  rendered="#{controller.username !=null}" action ="#{controller.logout()}" ajax="false" value="LogOut" icon="ui-icon-power"/>
 
@@ -48,13 +47,11 @@
                 </h:form>
                  <p:separator />
                 <p:outputPanel style="text-align: center; background-color:white; vertical-align: middle; height:100%; padding-top: 250px;" >
-                Wellcome #{controller.username} !
-
+                    Wellcome #{controller.username} !!!!
+                    
                     <h:form>
                         <p:outputPanel deferred="true">
-                            <h3>student "username" Completed task</h3>
-                            <p>Finished plant
-                                #{controller.plantList}</p>
+                          
                         </p:outputPanel>
 
                         <div style="height:600px"></div>

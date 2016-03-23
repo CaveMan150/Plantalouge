@@ -28,15 +28,15 @@
 
                 <p:outputPanel style="text-align: center; background-color:white; vertical-align: middle; height:100%; padding-top: 250px;" >
                     
-                    <p:commandButton value="Professor LogIn" onclick="PF('LogIn').show();">
-                         <f:setPropertyActionListener target="#{controller.type}" value="0"/>
+                    <p:commandButton value="Student Log In" onclick="PF('LogIn').show();">
+                         <f:setPropertyActionListener target="#{controller.type}" value="1"/>
                      </p:commandButton>
                     <br/>
                     <br/>
                  
                     <br/>
                     <br/>
-                    <p:button outcome="studentLogin" value="StudentPage"/>
+                    <p:button outcome="index" value="Professors Page"/>
                     <p:button outcome="DonateLog" value="Donator Page"/>
                     
             

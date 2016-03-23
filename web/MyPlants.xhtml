@@ -18,7 +18,7 @@
         </h:head>
 
         <h:body style="background-color: #0a3371; height:100%">
-            <h:form rendered="#{controller.type ==1}">
+            <h:form rendered="#{controller.type ==2}">
                 <p:outputPanel style="background-color: #0a3371; color: white; font-size:40px; font-weight: bold; width: 100%; height: 160px;">
                     Plantalogue
                     <br/>
@@ -30,7 +30,7 @@
 
                 <p:toolbar>
                     <f:facet name="left">
-                        <p:button outcome="StudentControlPanel" value="Home" icon="ui-icon-home" >
+                        <p:button outcome="dontatorHome" value="Home" icon="ui-icon-home" >
                         </p:button>
 
                         <p:commandButton value="Print Label" type="button" icon="ui-icon-print" >
@@ -38,7 +38,7 @@
                         <p:commandButton value="Search" type="button"  onclick="PF('dlg1').show();" />
                         <p:dialog header="Find a plant" widgetVar="dlg1" minHeight="40" resizable="false">
                             <p:inputText id="text"  required="false" label="text" />
-                            <p:button outcome="StudentPlantPage" value="Search" icon="ui-icon-search">
+                            <p:button outcome="dontatorHome" value="Search" icon="ui-icon-search">
                             </p:button>
                         </p:dialog>
                         <p:commandButton rendered="#{controller.username !=null}" action ="#{controller.logout()}" ajax="false" value="LogOut" icon="ui-icon-power"/>
@@ -72,7 +72,7 @@
 
                     <p:column headerText="Plant ">
                       
-                           name="output"><h:outputText value="#{plants.species}" />
+                           <h:outputText value="#{plants.species}" />
                  
                     </p:column>
 
@@ -120,12 +120,7 @@
                    
 
 
-                    <p:column headerText="Donator User ID">
-                        <h:outputText value="#{plants.userID}" />
-                   
-
-
-                    </p:column>
+               
 
                 </p:dataTable>
                
