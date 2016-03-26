@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:view contentType="text/html">
+        <script>
+            html, body {margin:0; padding:0; height:100 % ; }
+        </script>
+        <h:head>
+            <f:facet name="first">
+                <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+                <title>Manage Plants</title>
+            </f:facet>
+
+        </h:head>
+
+        <h:body style="background-color: #0a3371; height:100%">
+            <h:form rendered="#{controller.type ==0}">
+                <p:outputPanel style="background-color: #0a3371; color: white; font-size:40px; font-weight: bold; width: 100%; height: 160px;">
+                    Plantalogue
+                    <br/>
+                    <p:outputLabel style="color:white; font-size: 15px;" value=" UMW Biology Department"/> 
+                </p:outputPanel>
+
+
+                <p:growl id="messages" showDetail="true" />
+
+                <p:toolbar>
+                    <f:facet name="left">
+                        <p:button outcome="AdminControlPanel" value="Home" icon="ui-icon-home" >
+                        </p:button>
+
+
+
+                        <p:commandButton rendered="#{controller.username !=null}" action ="#{controller.logout()}" ajax="false" value="LogOut" icon="ui-icon-power"/>
+                        Time:  <p:clock pattern="HH:mm:ss" mode="server" />
+                        Date : <p:clock pattern="dd/MM/yyyy" mode="server" />
+
+                    </f:facet>
+
+
+                </p:toolbar>
+
+
+                <p:separator />
+                <p:outputPanel style="text-align: center; background-color:white; vertical-align: middle; height:100%; padding-top: 50px;" >
+
+
+
+                    <h:panelGrid >
+                        <p:schedule id="schedule" widgetVar="myschedule" timeZone="GMT+2">
+
+
+
+                        </p:schedule>
+                        <style type="text/css">
+                            .value {
+                                width: 2000px;
+                            }
+                        </style>
+                    </h:panelGrid>
+                </p:outputPanel>
+            </h:form>
+        </h:body>
+
+    </f:view>
+</html>  
+

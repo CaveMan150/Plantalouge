@@ -50,8 +50,20 @@
                                 <p:inputText value="#{controller.newType}"/>
                                 <p:outputLabel value="User Email"/> 
                                 <p:inputText value="#{controller.newEmail}"/>
-                                <p:commandButton value="Submit" action="#{controller.createUser()}" />
+                                <p:outputLabel value="Legal Name"/> 
+                                <p:inputText value="#{controller.nameOfUser}"/>
+                                <p:outputLabel value="User PictureID"/> 
+                                <p:inputText value="#{controller.pictureID}"/>
+                                <p:outputLabel value="User Phone"/> 
+                                <p:inputText value="#{controller.phoneNumber}"/>
+                                <p:commandButton value="Submit" actionListener="#{controller.createUser()}">
+                                    <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                                </p:commandButton>
 
+                                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                </p:confirmDialog>
                             </p:panelGrid>
                         </p:dialog>
                     </f:facet>
@@ -60,87 +72,95 @@
                 </p:toolbar>
 
                 <p:separator />
-                <p:dataTable cellSeparator="true" editMode="cell" editable="true" id="UserTable" var="user" value="#{controller.usersList}" paginator="true" rows="10" rowIndexVar="index">
-                    <p:ajax event ="cellEdit" listener="#{controller.editUser(user)}" update="UserTable"/>
+                <p:panel id="Musers" header="Manage Users"  >
+                    <p:dataTable cellSeparator="true" editMode="cell" editable="true" id="UserTable" var="user" value="#{controller.usersList}" paginator="true" rows="10" rowIndexVar="index">
+                        <p:ajax event ="cellEdit" listener="#{controller.editUser(user)}" update="UserTable"/>
 
-                    <p:column headerText="User ID">
+                        <p:column headerText="User ID">
 
-                        <h:outputText value="#{user.id}" />
+                            <h:outputText value="#{user.id}" />
 
-                    </p:column>
+                        </p:column>
 
-                    <p:column headerText="UserName">
-                        <p:cellEditor>
+                        <p:column headerText="UserName">
+                            <p:cellEditor>
 
-                            <f:facet name="output"><h:outputText value="#{user.username}" /></f:facet>
-                            <f:facet name="input"> <h:inputText value="#{user.username}" /></f:facet>
+                                <f:facet name="output"><h:outputText value="#{user.username}" /></f:facet>
+                                <f:facet name="input"> <h:inputText value="#{user.username}" /></f:facet>
 
-                        </p:cellEditor>
+                            </p:cellEditor>
 
-                    </p:column>
-
-
-                    <p:column headerText="User type">
-                        <p:cellEditor>
-
-                            <f:facet name="output"><h:outputText value="#{controller.getType(user.type)}" /> </f:facet>
-                            <f:facet name="input"> <h:inputText value="#{user.type}" /></f:facet>
-
-                        </p:cellEditor>
-
-                    </p:column>
+                        </p:column>
 
 
+                        <p:column headerText="User type">
+                            <p:cellEditor>
 
-                    <p:column headerText="Phone">
-                        <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{controller.getType(user.type)}" /> </f:facet>
+                                <f:facet name="input"> <h:inputText value="#{user.type}" /></f:facet>
 
-                            <f:facet name="output"> <h:outputText value="#{user.phone}" /></f:facet>
-                            <f:facet name="input"> <h:inputText value="#{user.phone}" /></f:facet>
+                            </p:cellEditor>
 
-                        </p:cellEditor>
-
-                    </p:column>
-
-
-                    <p:column headerText="Email ">
-                        <p:cellEditor>
-
-                            <f:facet name="output"> <h:outputText value="#{user.email}" /></f:facet>
-                            <f:facet name="input"> <h:inputText value="#{user.email}" /></f:facet>
-
-                        </p:cellEditor>
-
-                    </p:column>
-
-
-                    <p:column headerText="Name">
-                        <p:cellEditor>
-
-                            <f:facet name="output"> <h:outputText value="#{user.name}"/> </f:facet>
-                            <f:facet name="input"> <h:inputText value="#{user.name}" /></f:facet>
-
-                        </p:cellEditor>
-                    </p:column>
+                        </p:column>
 
 
 
-                    <p:column headerText="Picture">
-                        <p:graphicImage name="#{user.pictureID}" width="40"/>
-                    </p:column>
-                    <p:column>
+                        <p:column headerText="Phone">
+                            <p:cellEditor>
+
+                                <f:facet name="output"> <h:outputText value="#{user.phone}" /></f:facet>
+                                <f:facet name="input"> <h:inputText value="#{user.phone}" /></f:facet>
+
+                            </p:cellEditor>
+
+                        </p:column>
 
 
-                        <p:commandButton id="deleteButton" icon="ui-icon-trash"
-                                         title="Remove"
-                                         actionListener="#{controller.removePlant(plants.plantID, index)}" update="UserTable"
-                                         ajax="false"/>
+                        <p:column headerText="Email ">
+                            <p:cellEditor>
 
-                    </p:column>
+                                <f:facet name="output"> <h:outputText value="#{user.email}" /></f:facet>
+                                <f:facet name="input"> <h:inputText value="#{user.email}" /></f:facet>
 
-                </p:dataTable>
+                            </p:cellEditor>
+
+                        </p:column>
 
 
+                        <p:column headerText="Name">
+                            <p:cellEditor>
+
+                                <f:facet name="output"> <h:outputText value="#{user.name}"/> </f:facet>
+                                <f:facet name="input"> <h:inputText value="#{user.name}" /></f:facet>
+
+                            </p:cellEditor>
+                        </p:column>
+
+
+
+                        <p:column headerText="Picture">
+                            <p:graphicImage name="#{user.pictureID}" width="40"/>
+                        </p:column>
+                        <p:column>
+
+
+                            <p:commandButton id="deleteButton" icon="ui-icon-trash" value="Remove"
+                                             title="Remove"
+                                             actionListener="#{controller.removeuSER(user.id, index)}" update="UserTable"
+                                             >
+                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+
+                            </p:commandButton>
+
+                        </p:column>
+
+                    </p:dataTable>
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                    </p:confirmDialog>
+
+                </p:panel>
                 <p:outputPanel style="text-align: center; background-color:white; vertical-align: middle; height:100%; padding-top: 250px;" >
 
 
@@ -148,6 +168,7 @@
 
 
             </h:form>
+
             <p:outputLabel rendered="#{controller.type !=0}" value="OOPS!"/>
         </h:body>
 

@@ -62,7 +62,36 @@ public class Controller {
     private String NewPassword;
     private int NewType;
     private String NewEmail;
+    private String NameOfUser;
+    private String PictureID;
+    private String PhoneNumber;
 
+    public String getNameOfUser() {
+        return NameOfUser;
+    }
+
+    public void setNameOfUser(String NameOfUser) {
+        this.NameOfUser = NameOfUser;
+    }
+
+    public String getPictureID() {
+        return PictureID;
+    }
+
+    public void setPictureID(String PictureID) {
+        this.PictureID = PictureID;
+    }
+
+    public String getPhoneNumber() {
+        return PhoneNumber;
+    }
+
+    public void setPhoneNumber(String PhoneNumber) {
+        this.PhoneNumber = PhoneNumber;
+    }
+    
+
+    
     public String getNewPassword() {
         return NewPassword;
     }
@@ -146,6 +175,14 @@ public class Controller {
         }
     }
 
+    public void removeUser(int ID, int index){
+        try {
+            uController.destroy(ID);
+            usersList.remove(index);
+        } catch (NonexistentEntityException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     public void removeTask(int ID, int index) {
         try {
             System.out.println("remove task remove plant rempppppppfijdsjdkjss");
@@ -240,14 +277,24 @@ public class Controller {
 
     public void createUser() {
 
+        try{
         Users newUser = new Users();
         newUser.setUsername(NewUsername);
         newUser.setPassword(NewPassword);
         newUser.setType(NewType);
         newUser.setEmail(NewEmail);
+        newUser.setPhone(PhoneNumber);
+        newUser.setPictureID(PictureID);
+        newUser.setName(NameOfUser);
+        
         uController.create(newUser);
-
+        }catch (Exception ex) {
+            StackTraceElement[] stackTrace = ex.getStackTrace();
+        }
+        
+        
     }
+  
 
     public void createTask() {
         try {
