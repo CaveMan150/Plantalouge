@@ -5,7 +5,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
 
-    <f:view contentType="text/html">
+    <f:view contentType="text/html" >
         <script>
             html, body {margin:0; padding:0; height:100 % ; }
         </script>
@@ -17,8 +17,8 @@
 
         </h:head>
 
-        <h:body style="background-color: #0a3371; height:100%">
-            <h:form rendered="#{controller.type ==0}">
+        <h:body style="background-color: #0a3371; height:100%" onload="#{controller.accessPlantsInfo()}">
+            <h:form rendered="#{controller.type ==0}" >
                 <p:outputPanel style="background-color: #0a3371; color: white; font-size:40px; font-weight: bold; width: 100%; height: 160px;">
                     Plantalogue
                     <br/>
@@ -26,9 +26,9 @@
                 </p:outputPanel>
 
 
-                <p:growl id="messages" showDetail="true" />
+                <p:growl id="messages" showDetail="true"  />
 
-                <p:toolbar>
+                <p:toolbar >
                     <f:facet name="left">
                         <p:button outcome="AdminControlPanel" value="Home" icon="ui-icon-home" >
                         </p:button>
@@ -37,11 +37,16 @@
                             <p:printer target="image" /></p:commandButton> <p:graphicImage id="image"  />
                         <p:commandButton value="Search" type="button"  onclick="PF('dlg1').show();" />
                         <p:dialog header="Find a plant" widgetVar="dlg1" minHeight="40" resizable="false">
-                            <p:inputText id="text"  required="false" label="text" />
-                            <p:button outcome="ManagePlants" value="Search" icon="ui-icon-search">
-                            </p:button>
+                            <p:inputText id="text"  required="false" label="text"   value="#{controller.a}"  />
+
+                            <p:commandButton action="#{controller.plantList.contains(a)}" value="Search" icon="ui-icon-search" >
+
+                                <!--Search a plant-->
+                            </p:commandButton>
                         </p:dialog>
+                        <p:commandButton rendered="#{controller.username !=null}"  value="Add Plant" icon="ui-icon-squaresmall-plus" onclick="PF('add').show();"/>
                         <p:commandButton rendered="#{controller.username !=null}" action ="#{controller.logout()}" ajax="false" value="LogOut" icon="ui-icon-power"/>
+
 
 
                     </f:facet>
@@ -51,7 +56,7 @@
                 <p:separator />
 
                 <p:panel id="Mplant" header="Manage Plants"  >
-                    <p:dataTable cellSeparator="true" editMode="cell" editable="true" id="PlantsTable" var="plants" value="#{controller.plantList}" paginator="true" rows="10" rowIndexVar="index">
+                    <p:dataTable  cellSeparator="true" editMode="cell" editable="true" id="PlantsTable" var="plants" value="#{controller.plantList}" paginator="true" rows="10" rowIndexVar="index">
                         <p:ajax event ="cellEdit" listener="#{controller.editPlant(plants)}" update="PlantsTable"/>
 
                         <p:column headerText="Plant ID">
@@ -178,17 +183,47 @@
 
                         <p:outputLabel value="Other Notes"/>
                         <p:inputText value="#{controller.otherNotes}"/>
-                        <p:commandButton value="Submit"  actionListener="#{controller.createTask()}" >
-                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
-                        </p:commandButton>
-                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                        </p:confirmDialog>
+                        <p:commandButton value="Submit"  actionListener="#{controller.createTask()}" onclick="PF('TaskDG').hide();" update="PlantsTable"/>
+
+
+
 
                     </p:panelGrid>
                 </p:dialog>
+                <p:dialog header="Add new user" widgetVar="add" minHeight="40"  >
+                    <h:outputText value="Enter a new user information" />
+                    <p:panelGrid  columns="2">
 
+                        <p:outputLabel value="Genus"/> 
+                        <p:inputText value="#{controller.newGen}"/>
+                        <p:outputLabel value="Species"/> 
+                        <p:inputText value="#{controller.newSpec}"/>
+
+                        <p:outputLabel value="Picture"/> 
+                        <p:inputText value="#{controller.newPic}"/>
+                        <p:outputLabel value="Table Number"/> 
+                        <p:inputText value="#{controller.newTableN}"/>
+                        <p:outputLabel value="Table position"/> 
+                        <p:inputText value="#{controller.newTableP}"/>
+                        <p:outputLabel value="Other notes"/> 
+                        <p:inputText value="#{controller.newOtherN}"/>
+                        <p:outputLabel for="AssignUser" value="User" /> 
+
+                        <p:selectOneMenu id="AssignUser"  value="#{controller.assignUser}" style="width:150px">
+                            <f:selectItems value="#{controller.usersList}"  var="user" itemLabel="#{user.username}"/>
+
+<!-- NEED TO IMPLEMENT CONVERTER IN OTDER FOR THIS TO WORK! LOOK AT THIS QUESTION IN STACKOVERFLOW "http://stackoverflow.com/questions/6848970/how-to-populate-options-of-hselectonemenu-from-database -->
+
+
+                        </p:selectOneMenu >
+
+                        <p:commandButton value="Submit" actionListener="#{controller.createPlant()}" onclick="PF('add').hide();" update="PlantsTable">
+
+                        </p:commandButton>
+
+
+                    </p:panelGrid>
+                </p:dialog>
                 <p:outputPanel style="text-align: center; background-color:white; vertical-align: middle; height:100%; padding-top: 250px;" >
 
                 </p:outputPanel>

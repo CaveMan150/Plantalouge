@@ -37,35 +37,7 @@
                         <p:commandButton rendered="#{controller.username !=null}"  value="Add User" icon="ui-icon-squaresmall-plus" onclick="PF('add').show();"/>
                         <p:commandButton rendered="#{controller.username !=null}" action ="#{controller.logout()}" ajax="false" value="LogOut" icon="ui-icon-power"/>
 
-                        <p:dialog header="Add new user" widgetVar="add" minHeight="40">
-                            <h:outputText value="Enter a new user information" />
-                            <p:panelGrid  columns="2">
-
-                                <p:outputLabel value="User Name"/> 
-                                <p:inputText value="#{controller.newUsername}"/>
-                                <p:outputLabel value="Password"/> 
-                                <p:inputText value="#{controller.newPassword}"/>
-
-                                <p:outputLabel value="Type of user (0-2)"/> 
-                                <p:inputText value="#{controller.newType}"/>
-                                <p:outputLabel value="User Email"/> 
-                                <p:inputText value="#{controller.newEmail}"/>
-                                <p:outputLabel value="Legal Name"/> 
-                                <p:inputText value="#{controller.nameOfUser}"/>
-                                <p:outputLabel value="User PictureID"/> 
-                                <p:inputText value="#{controller.pictureID}"/>
-                                <p:outputLabel value="User Phone"/> 
-                                <p:inputText value="#{controller.phoneNumber}"/>
-                                <p:commandButton value="Submit" actionListener="#{controller.createUser()}">
-                                    <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
-                                </p:commandButton>
-
-                                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-                                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                                </p:confirmDialog>
-                            </p:panelGrid>
-                        </p:dialog>
+                    
                     </f:facet>
 
 
@@ -146,20 +118,39 @@
 
                             <p:commandButton id="deleteButton" icon="ui-icon-trash" value="Remove"
                                              title="Remove"
-                                             actionListener="#{controller.removeuSER(user.id, index)}" update="UserTable"
-                                             >
-                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
-
-                            </p:commandButton>
+                                             actionListener="#{controller.removeUser(user.id, index)}" 
+                                            update="UserTable" />
+                         
+                            
+                        
 
                         </p:column>
 
                     </p:dataTable>
-                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                    </p:confirmDialog>
+           <p:dialog header="Add new user" widgetVar="add" minHeight="40">
+                            <h:outputText value="Enter a new user information" />
+                            <p:panelGrid  columns="2">
 
+                                <p:outputLabel value="User Name"/> 
+                                <p:inputText value="#{controller.newUsername}"/>
+                                <p:outputLabel value="Password"/> 
+                                <p:inputText value="#{controller.newPassword}"/>
+
+                                <p:outputLabel value="Type of user (0-2)"/> 
+                                <p:inputText value="#{controller.newType}"/>
+                                <p:outputLabel value="User Email"/> 
+                                <p:inputText value="#{controller.newEmail}"/>
+                                <p:outputLabel value="Legal Name"/> 
+                                <p:inputText value="#{controller.nameOfUser}"/>
+                                <p:outputLabel value="User PictureID"/> 
+                                <p:inputText value="#{controller.pictureID}"/>
+                                <p:outputLabel value="User Phone"/> 
+                                <p:inputText value="#{controller.phoneNumber}"/>
+                                <p:commandButton value="Submit" actionListener="#{controller.createUser()}" onclick="PF('add').hide();" update="UserTable"/>
+                                    
+                               
+                            </p:panelGrid>
+                        </p:dialog>
                 </p:panel>
                 <p:outputPanel style="text-align: center; background-color:white; vertical-align: middle; height:100%; padding-top: 250px;" >
 

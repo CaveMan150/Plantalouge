@@ -199,5 +199,9 @@ public class Plants implements Serializable {
     public void setTasksCollection(Collection<Tasks> tasksCollection) {
         this.tasksCollection = tasksCollection;
     }
+
+    public void setUserID(int AssignUserID) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

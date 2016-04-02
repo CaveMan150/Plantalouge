@@ -135,6 +135,9 @@ public class UsersController implements Serializable {
             em.close();
         }
     }
+    
+    
+    
      public Users login(String username, String password, int t)
    {
        try
@@ -158,4 +161,9 @@ public class UsersController implements Serializable {
          EntityManager em = getEntityManager();
          em.remove(em);
      }
+     
+     
+     
+     
+     
 }

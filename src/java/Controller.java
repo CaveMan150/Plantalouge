@@ -13,7 +13,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.control.TableColumn.CellEditEvent;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -22,7 +21,6 @@ import query.PlantsController;
 import query.TasksController;
 import query.UsersController;
 import query.WorkScheduleController;
-import query.exceptions.IllegalOrphanException;
 import query.exceptions.NonexistentEntityException;
 
 /**
@@ -37,6 +35,7 @@ public class Controller {
     private String password;
     private int type = -10;
     private Plants selectedPlant;
+    private long userID;
 
     
 
@@ -65,6 +64,101 @@ public class Controller {
     private String NameOfUser;
     private String PictureID;
     private String PhoneNumber;
+    
+    private String newGen;
+    private String newSpec;
+    private String NewPic;
+    private String newTableN;
+    private String newTableP;
+    private String newOtherN;
+    private Users AssignUser;
+    
+    private String a;
+
+    public long getUserID() {
+        return userID;
+    }
+
+    public void setUserID(long userID) {
+        this.userID = userID;
+    }
+
+    
+    public String getA() {
+        return a;
+    }
+
+    public void setA(String a) {
+        this.a = a;
+    }
+
+    
+    public String getNewGen() {
+        return newGen;
+    }
+
+    public void setNewGen(String newGen) {
+        this.newGen = newGen;
+    }
+
+    public String getNewSpec() {
+        return newSpec;
+    }
+
+    public void setNewSpec(String newSpec) {
+        this.newSpec = newSpec;
+    }
+
+    public String getNewPic() {
+        return NewPic;
+    }
+
+    public void setNewPic(String NewPic) {
+        this.NewPic = NewPic;
+    }
+
+    public String getNewTableN() {
+        return newTableN;
+    }
+
+    public void setNewTableN(String newTableN) {
+        this.newTableN = newTableN;
+    }
+
+    public String getNewTableP() {
+        return newTableP;
+    }
+
+    public void setNewTableP(String newTableP) {
+        this.newTableP = newTableP;
+    }
+
+    public String getNewOtherN() {
+        return newOtherN;
+    }
+
+    public void setNewOtherN(String newOtherN) {
+        this.newOtherN = newOtherN;
+    }
+
+    public Users getAssignUser() {
+        return AssignUser;
+    }
+
+    public void setAssignUser(Users AssignUser) {
+        this.AssignUser = AssignUser;
+    }
+
+
+    
+    
+    
+    
+    
+    
+
+   
+    
 
     public String getNameOfUser() {
         return NameOfUser;
@@ -202,6 +296,7 @@ public class Controller {
 
             wController.destroy(ID);
             workList.remove(index);
+            
 
             //   return ID;
         } catch (NonexistentEntityException ex) {
@@ -288,6 +383,10 @@ public class Controller {
         newUser.setName(NameOfUser);
         
         uController.create(newUser);
+        workList = wController.findWorkScheduleEntities();
+         tasksList = tController.findTasksEntities(); // retrives all the tasks from the database
+         usersList = uController.findUsersEntities(); //retrieves all the users from the database
+         plantList = pController.findPlantsEntities();
         }catch (Exception ex) {
             StackTraceElement[] stackTrace = ex.getStackTrace();
         }
@@ -295,7 +394,23 @@ public class Controller {
         
     }
   
-
+    public void createPlant(){
+        Plants newPlant = new Plants();
+        newPlant.setGenus(newGen);
+        newPlant.setSpecies(newSpec);
+        newPlant.setPictureID(NewPic);
+        newPlant.setOtherNotes(newOtherN);
+        newPlant.setTableNumber(newTableN);
+        newPlant.setTablePosition(newTableP);
+        newPlant.setUserID(AssignUser);
+        pController.create(newPlant);
+         workList = wController.findWorkScheduleEntities();
+         tasksList = tController.findTasksEntities(); // retrives all the tasks from the database
+         usersList = uController.findUsersEntities(); //retrieves all the users from the database
+         plantList = pController.findPlantsEntities();
+         
+    
+    }
     public void createTask() {
         try {
             Tasks tasks = new Tasks();
@@ -308,7 +423,11 @@ public class Controller {
             tasks.setPlantID(selectedPlant);
             //tasks.setWorkSchedule(workSchedule);
             tController.create(tasks);
-
+         workList = wController.findWorkScheduleEntities();
+         tasksList = tController.findTasksEntities(); // retrives all the tasks from the database
+         usersList = uController.findUsersEntities(); //retrieves all the users from the database
+         plantList = pController.findPlantsEntities();
+        
         } catch (Exception ex) {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -408,16 +527,19 @@ public class Controller {
 
     public String login() {
         System.out.println("\n\n\n test test " + username + " -- " + password);
-
+         workList = wController.findWorkScheduleEntities();
+         tasksList = tController.findTasksEntities(); // retrives all the tasks from the database
+         usersList = uController.findUsersEntities(); //retrieves all the users from the database
+         plantList = pController.findPlantsEntities();
         Users user = uController.login(username, password, type);
         if (user == null) {
             return null;
+            
         } else {
             System.out.println("\n\n\n test test ");
-            plantList = pController.findPlantsEntities();
-            usersList = uController.findUsersEntities(); //retrieves all the users from the database
-            tasksList = tController.findTasksEntities(); // retrives all the tasks from the database
-            workList = wController.findWorkScheduleEntities();
+           
+           
+           
             switch (type) {
                 case 0:
 
@@ -433,6 +555,26 @@ public class Controller {
 
         }
     }
+    
+    public void accessPlantsInfo(){
+         plantList = pController.findPlantsEntities();
+        
+        
+    }
+    public void accessUserInfo(){
+        
+         usersList = uController.findUsersEntities(); //retrieves all the users from the database
+        
+    }
+    public void accessTasksInfo(){
+        tasksList = tController.findTasksEntities(); // retrives all the tasks from the database
+
+        
+    }
+    public void accessWorkInfo(){
+        
+         workList = wController.findWorkScheduleEntities();
+    }
 
     public String logout() {
 
@@ -443,4 +585,8 @@ public class Controller {
         return "index.xhtml";
 
     }
+    
+    
+    
+    
 }
