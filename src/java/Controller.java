@@ -10,6 +10,7 @@ import EntityBeans.Tasks;
 import EntityBeans.Users;
 import EntityBeans.WorkSchedule;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,7 +31,6 @@ import query.exceptions.NonexistentEntityException;
 @ManagedBean
 @SessionScoped
 public class Controller {
-
     private String username;
     private String password;
     private int type = -10;
@@ -72,8 +72,20 @@ public class Controller {
     private String newTableP;
     private String newOtherN;
     private Users AssignUser;
+    private  List<Plants> result = new LinkedList();
+    private String a;//a search variable
     
-    private String a;
+    private String SearTerm;
+
+    public String getSearTerm() {
+        return SearTerm;
+    }
+
+    public void setSearTerm(String SearTerm) {
+        this.SearTerm = SearTerm;
+    }
+    
+    
 
     public long getUserID() {
         return userID;
@@ -83,6 +95,35 @@ public class Controller {
         this.userID = userID;
     }
 
+    
+    public void searchPant(){
+        
+        //Plants p = new Plants();
+      
+        System.out.println("searching ...");
+        
+        result.clear();
+        for(Plants str :plantList){
+            if(str.toString().contains(a)){
+                 System.out.println(str);
+                result.add(str);
+            //    S = str.getGenus();
+              //  return S;
+            }
+        }
+        
+        //return "Could not find plant";
+    }
+
+    public List<Plants> getResult() {
+        return result;
+    }
+
+    public void setResult(List<Plants> result) {
+        this.result = result;
+    }
+    
+   
     
     public String getA() {
         return a;
@@ -265,7 +306,7 @@ public class Controller {
 
             //   return ID;
         } catch (NonexistentEntityException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+           ex.printStackTrace();
         }
     }
 
@@ -395,6 +436,7 @@ public class Controller {
     }
   
     public void createPlant(){
+        System.out.println("creating plant!");
         Plants newPlant = new Plants();
         newPlant.setGenus(newGen);
         newPlant.setSpecies(newSpec);
@@ -403,6 +445,8 @@ public class Controller {
         newPlant.setTableNumber(newTableN);
         newPlant.setTablePosition(newTableP);
         newPlant.setUserID(AssignUser);
+        
+        
         pController.create(newPlant);
          workList = wController.findWorkScheduleEntities();
          tasksList = tController.findTasksEntities(); // retrives all the tasks from the database
@@ -413,6 +457,7 @@ public class Controller {
     }
     public void createTask() {
         try {
+            System.out.println("creating task!");
             Tasks tasks = new Tasks();
             tasks.setEndDate(ExpectedEndDate);
             tasks.setFertilizer(FertilizerAmount);
@@ -429,7 +474,7 @@ public class Controller {
          plantList = pController.findPlantsEntities();
         
         } catch (Exception ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+           ex.printStackTrace();
         }
 
     }

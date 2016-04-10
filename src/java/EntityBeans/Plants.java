@@ -157,6 +157,14 @@ public class Plants implements Serializable {
     public void setUserID(Users userID) {
         this.userID = userID;
     }
+    public String getUsername(){
+        
+        return userID.getName();
+    }
+    public void setUsername(Users userID){
+        
+        //this.userID = userID.getUsername();
+    }
 
     @Override
     public int hashCode() {
@@ -180,7 +188,7 @@ public class Plants implements Serializable {
 
     @Override
     public String toString() {
-        return "" + plantID;
+        return "" + plantID+" "+genus+" "+species+" "+this.otherNotes;
     }
 
     public Labels getLabels() {

@@ -135,7 +135,7 @@ public class Users implements Serializable {
 
     @Override
     public String toString() {
-        return " " + id;
+        return "" + id;
     }
 
     public int getType() {

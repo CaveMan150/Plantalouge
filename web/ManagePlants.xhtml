@@ -18,7 +18,7 @@
         </h:head>
 
         <h:body style="background-color: #0a3371; height:100%" onload="#{controller.accessPlantsInfo()}">
-            <h:form rendered="#{controller.type ==0}" >
+            <h:form id="f0" rendered="#{controller.type ==0}" >
                 <p:outputPanel style="background-color: #0a3371; color: white; font-size:40px; font-weight: bold; width: 100%; height: 160px;">
                     Plantalogue
                     <br/>
@@ -26,7 +26,7 @@
                 </p:outputPanel>
 
 
-                <p:growl id="messages" showDetail="true"  />
+                <p:messages autoUpdate="true" id="messages" showDetail="true"  />
 
                 <p:toolbar >
                     <f:facet name="left">
@@ -37,12 +37,7 @@
                             <p:printer target="image" /></p:commandButton> <p:graphicImage id="image"  />
                         <p:commandButton value="Search" type="button"  onclick="PF('dlg1').show();" />
                         <p:dialog header="Find a plant" widgetVar="dlg1" minHeight="40" resizable="false">
-                            <p:inputText id="text"  required="false" label="text"   value="#{controller.a}"  />
 
-                            <p:commandButton action="#{controller.plantList.contains(a)}" value="Search" icon="ui-icon-search" >
-
-                                <!--Search a plant-->
-                            </p:commandButton>
                         </p:dialog>
                         <p:commandButton rendered="#{controller.username !=null}"  value="Add Plant" icon="ui-icon-squaresmall-plus" onclick="PF('add').show();"/>
                         <p:commandButton rendered="#{controller.username !=null}" action ="#{controller.logout()}" ajax="false" value="LogOut" icon="ui-icon-power"/>
@@ -55,9 +50,15 @@
                 </p:toolbar>
                 <p:separator />
 
-                <p:panel id="Mplant" header="Manage Plants"  >
-                    <p:dataTable  cellSeparator="true" editMode="cell" editable="true" id="PlantsTable" var="plants" value="#{controller.plantList}" paginator="true" rows="10" rowIndexVar="index">
-                        <p:ajax event ="cellEdit" listener="#{controller.editPlant(plants)}" update="PlantsTable"/>
+                <p:inputText id="text"  required="false" label="text"   value="#{controller.a}"  />
+
+                <p:commandButton action="#{controller.searchPant()}" value="Search" icon="ui-icon-search" oncomplete="PF('result').show();" update="f3:sp" >
+
+                    <!--Search a plant-->
+                </p:commandButton>
+                <p:panel id="PlantsTable" header="Manage Plants">
+                    <p:dataTable id="dt"  cellSeparator="true" editMode="cell" editable="true"  var="plants" value="#{controller.plantList}" paginator="true" rows="10" rowIndexVar="index">
+                        <p:ajax id="aj" event ="cellEdit" listener="#{controller.editPlant(plants)}" update="dt"/>
 
                         <p:column headerText="Plant ID">
 
@@ -76,7 +77,7 @@
                         </p:column>
 
 
-                        <p:column headerText="Plant ">
+                        <p:column headerText="species">
                             <p:cellEditor>
 
                                 <f:facet name="output"><h:outputText value="#{plants.species}" /> </f:facet>
@@ -140,9 +141,9 @@
                         <p:column>
 
 
-                            <p:commandButton  icon="ui-icon-trash" value="Remove"
+                            <p:commandButton id="cb"  icon="ui-icon-trash" value="Remove"
                                               title="Remove"
-                                              actionListener="#{controller.removePlant(plants.plantID, index)}" update="PlantsTable"
+                                              actionListener="#{controller.removePlant(plants.plantID, index)}" update="dt"
                                               >
                                 <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
                             </p:commandButton>
@@ -163,67 +164,187 @@
                         </p:column>
 
                     </p:dataTable>
+                    <p:dialog header="Add new plant" widgetVar="add" minHeight="40"  >
+                        <h:outputText value="Enter a new plant information" />
+                        <p:panelGrid  columns="2">
+
+                            <p:outputLabel value="Genus"/> 
+                            <p:inputText value="#{controller.newGen}"/>
+                            <p:outputLabel value="Species"/> 
+                            <p:inputText value="#{controller.newSpec}"/>
+
+                            <p:outputLabel value="Picture"/> 
+                            <p:inputText value="#{controller.newPic}"/>
+                            <p:outputLabel value="Table Number"/> 
+                            <p:inputText value="#{controller.newTableN}"/>
+                            <p:outputLabel value="Table position"/> 
+                            <p:inputText value="#{controller.newTableP}"/>
+                            <p:outputLabel value="Other notes"/> 
+                            <p:inputText value="#{controller.newOtherN}"/>
+                            <p:outputLabel for="AssignUser" value="User" /> 
+
+                            <p:selectOneMenu id="AssignUser"  value="#{controller.assignUser}" style="width:150px" converter="UConverter">
+                                <f:selectItems value="#{controller.usersList}"  var="user" itemLabel="#{user.username}"/>
+
+                                <!-- NEED TO IMPLEMENT CONVERTER IN OTDER FOR THIS TO WORK! LOOK AT THIS QUESTION IN STACKOVERFLOW "http://stackoverflow.com/questions/6848970/how-to-populate-options-of-hselectonemenu-from-database -->
+
+
+                            </p:selectOneMenu >
+
+                            <p:commandButton  value="Submit" action="#{controller.createPlant()}"  oncomplete="PF('add').hide();" update="@form">
+
+                            </p:commandButton>
+
+
+                        </p:panelGrid>
+                    </p:dialog>
 
                 </p:panel>
-                <p:dialog widgetVar="TaskDG"  header="Add new Task" >
-                    <p:panelGrid  columns="2">
-                        <p:outputLabel value="Water Amount"/> 
-                        <p:inputText value="#{controller.waterAmount}"/>
-                        <p:outputLabel value="Water Time"/> 
-                        <p:calendar  pattern="HH:mm" timeOnly="true" value="#{controller.waterTime}"/>
+                <h:form id="f1"> 
+                    <p:dialog widgetVar="TaskDG"  header="Add new Task" >
+                        <p:panelGrid  columns="2">
+                            <p:outputLabel value="Water Amount"/> 
+                            <p:inputText value="#{controller.waterAmount}"/>
+                            <p:outputLabel value="Water Time"/> 
+                            <p:calendar  pattern="HH:mm" timeOnly="true" value="#{controller.waterTime}"/>
 
-                        <p:outputLabel value="Fertilizer Amount"/> 
-                        <p:inputText value="#{controller.fertilizerAmount}"/>
+                            <p:outputLabel value="Fertilizer Amount"/> 
+                            <p:inputText value="#{controller.fertilizerAmount}"/>
 
-                        <p:outputLabel value="Start Date"/>                         
-                        <p:calendar  value="#{controller.startDate}"/>
+                            <p:outputLabel value="Start Date"/>                         
+                            <p:calendar  value="#{controller.startDate}"/>
 
-                        <p:outputLabel value="Expected End Date"/> 
-                        <p:calendar value="#{controller.expectedEndDate}"/>
+                            <p:outputLabel value="Expected End Date"/> 
+                            <p:calendar value="#{controller.expectedEndDate}"/>
 
-                        <p:outputLabel value="Other Notes"/>
-                        <p:inputText value="#{controller.otherNotes}"/>
-                        <p:commandButton value="Submit"  actionListener="#{controller.createTask()}" onclick="PF('TaskDG').hide();" update="PlantsTable"/>
-
-
-
-
-                    </p:panelGrid>
-                </p:dialog>
-                <p:dialog header="Add new user" widgetVar="add" minHeight="40"  >
-                    <h:outputText value="Enter a new user information" />
-                    <p:panelGrid  columns="2">
-
-                        <p:outputLabel value="Genus"/> 
-                        <p:inputText value="#{controller.newGen}"/>
-                        <p:outputLabel value="Species"/> 
-                        <p:inputText value="#{controller.newSpec}"/>
-
-                        <p:outputLabel value="Picture"/> 
-                        <p:inputText value="#{controller.newPic}"/>
-                        <p:outputLabel value="Table Number"/> 
-                        <p:inputText value="#{controller.newTableN}"/>
-                        <p:outputLabel value="Table position"/> 
-                        <p:inputText value="#{controller.newTableP}"/>
-                        <p:outputLabel value="Other notes"/> 
-                        <p:inputText value="#{controller.newOtherN}"/>
-                        <p:outputLabel for="AssignUser" value="User" /> 
-
-                        <p:selectOneMenu id="AssignUser"  value="#{controller.assignUser}" style="width:150px">
-                            <f:selectItems value="#{controller.usersList}"  var="user" itemLabel="#{user.username}"/>
-
-<!-- NEED TO IMPLEMENT CONVERTER IN OTDER FOR THIS TO WORK! LOOK AT THIS QUESTION IN STACKOVERFLOW "http://stackoverflow.com/questions/6848970/how-to-populate-options-of-hselectonemenu-from-database -->
+                            <p:outputLabel value="Other Notes"/>
+                            <p:inputText value="#{controller.otherNotes}"/>
+                            <p:commandButton value="Submit"  actionListener="#{controller.createTask()}" onclick="PF('TaskDG').hide();" update="f1"/>
 
 
-                        </p:selectOneMenu >
-
-                        <p:commandButton value="Submit" actionListener="#{controller.createPlant()}" onclick="PF('add').hide();" update="PlantsTable">
-
-                        </p:commandButton>
 
 
-                    </p:panelGrid>
-                </p:dialog>
+                        </p:panelGrid>
+                    </p:dialog>
+
+                </h:form>
+
+
+
+
+
+                <h:form id="f3">
+                    <p:dialog header="Resultt" widgetVar="result" minHeight="40"  >
+                        <p:dataTable  cellSeparator="true" editMode="cell" editable="true" id="sp" var="searchp" value="#{controller.result}" paginator="true" rows="10" rowIndexVar="index1">
+                            <p:ajax event ="cellEdit" listener="#{controller.editPlant(searchp)}" update="sp"/>
+
+                            <p:column headerText="Plant ID">
+
+                                <h:outputText value="#{searchp.plantID}" />
+
+                            </p:column>
+
+                            <p:column headerText="Plant genus">
+                                <p:cellEditor>
+
+                                    <f:facet name="output"><h:outputText value="#{searchp.genus}" /></f:facet>
+                                    <f:facet name="input"> <h:inputText value="#{searchp.genus}" /></f:facet>
+
+                                </p:cellEditor>
+
+                            </p:column>
+
+
+                            <p:column headerText="species">
+                                <p:cellEditor>
+
+                                    <f:facet name="output"><h:outputText value="#{searchp.species}" /> </f:facet>
+                                    <f:facet name="input"> <h:inputText value="#{searchp.species}" /></f:facet>
+
+                                </p:cellEditor>
+
+                            </p:column>
+
+
+
+                            <p:column headerText="Plant Label">
+                                <p:cellEditor>
+
+                                    <f:facet name="output"> <h:outputText value="#{searchp.labels.labelName}" /></f:facet>
+                                    <f:facet name="input"> <h:inputText value="#{searchp.labels.labelName}" /></f:facet>
+
+                                </p:cellEditor>
+
+                            </p:column>
+
+
+                            <p:column headerText="Plant table Number ">
+                                <p:cellEditor>
+
+                                    <f:facet name="output"> <h:outputText value="#{searchp.tableNumber}" /></f:facet>
+                                    <f:facet name="input"> <h:inputText value="#{searchp.tableNumber}" /></f:facet>
+
+                                </p:cellEditor>
+
+                            </p:column>
+
+
+                            <p:column headerText="Plant table position">
+                                <p:cellEditor>
+
+                                    <f:facet name="output"> <h:outputText value="#{searchp.tablePosition}"/> </f:facet>
+                                    <f:facet name="input"> <h:inputText value="#{searchp.tablePosition}" /></f:facet>
+
+                                </p:cellEditor>
+                            </p:column>
+
+
+
+                            <p:column headerText="Other Notes">
+                                <p:cellEditor>
+                                    <f:facet name="output"> <h:outputText value="#{searchp.otherNotes}" /></f:facet>
+                                    <f:facet name="input"> <h:inputText value="#{searchp.otherNotes}" /></f:facet>
+
+                                </p:cellEditor>
+                            </p:column>
+
+
+
+
+
+
+                            <p:column headerText="Donator User ID">
+                                <h:outputText value="#{searchp.userID}" />
+                            </p:column>
+                            <p:column>
+
+                                <h:form>
+                                    <p:commandButton  icon="ui-icon-trash" value="Remove"  ajax="false"
+                                                      title="Remove"
+                                                      action="#{controller.removePlant(searchp.plantID, index1)}" update="f3"
+                                                      />
+                                </h:form>
+                                <!--  <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                              </p:commandButton>
+
+                              <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                  <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                  <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                              </p:confirmDialog>
+                                -->
+                            </p:column>
+                            <p:column>
+
+
+                                <p:commandButton value="New Task" icon="ui-icon-plusthick" title="Create Task" onclick="PF('TaskDG').show();"  >
+                                    <f:setPropertyActionListener target="#{controller.selectedPlant}" value="#{searchp}"/>
+                                </p:commandButton>
+
+                            </p:column>
+
+                        </p:dataTable>
+                    </p:dialog>
+                </h:form>
                 <p:outputPanel style="text-align: center; background-color:white; vertical-align: middle; height:100%; padding-top: 250px;" >
 
                 </p:outputPanel>

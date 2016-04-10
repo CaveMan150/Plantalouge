@@ -161,6 +161,21 @@ public class UsersController implements Serializable {
          EntityManager em = getEntityManager();
          em.remove(em);
      }
+
+    public Users findU(String value) {
+        try
+       {
+           EntityManager em = getEntityManager();
+           Users user=em.createNamedQuery("Users.findByUsername", Users.class).setParameter("username", value).getSingleResult();
+           if(user==null)
+               return null;
+            return user;
+       }
+       catch (Exception e)
+       {
+            return null;
+       }
+    }
      
      
      
