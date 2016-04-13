@@ -19,7 +19,7 @@
         </h:head>
 
         <h:body style="background-color: #0a3371; height:100%">
-            <h:form rendered="#{controller.type ==0}">
+            <h:form id="f0" rendered="#{controller.type ==0}">
                 <p:outputPanel style="background-color: #0a3371; color: white; font-size:40px; font-weight: bold; width: 100%; height: 160px;">
                     Plantalogue
                     <br/>
@@ -28,7 +28,7 @@
 
 
 
-                <p:growl id="messages" showDetail="true" />
+                <p:messages autoUpdate="true" id="messages" showDetail="true" />
 
                 <p:toolbar>
                     <f:facet name="left">
@@ -36,17 +36,21 @@
                         </p:button>
                         <p:commandButton rendered="#{controller.username !=null}"  value="Add User" icon="ui-icon-squaresmall-plus" onclick="PF('add').show();"/>
                         <p:commandButton rendered="#{controller.username !=null}" action ="#{controller.logout()}" ajax="false" value="LogOut" icon="ui-icon-power"/>
+                        <p:inputText id="text"  required="false" label="text" value="#{controller.SU}"  />
+                        <p:commandButton id="cm" action="#{controller.searchUser()}" value="Search" icon="ui-icon-search" oncomplete="PF('result').show();" update="f3:su"/> 
 
-                    
+
                     </f:facet>
 
 
                 </p:toolbar>
 
                 <p:separator />
+
+
                 <p:panel id="Musers" header="Manage Users"  >
-                    <p:dataTable cellSeparator="true" editMode="cell" editable="true" id="UserTable" var="user" value="#{controller.usersList}" paginator="true" rows="10" rowIndexVar="index">
-                        <p:ajax event ="cellEdit" listener="#{controller.editUser(user)}" update="UserTable"/>
+                    <p:dataTable id="dt" cellSeparator="true" editMode="cell" editable="true"  var="user" value="#{controller.usersList}" paginator="true" rows="10" rowIndexVar="index">
+                        <p:ajax id="aj" event="cellEdit" listener="#{controller.editUser(user)}" update="dt"/>
 
                         <p:column headerText="User ID">
 
@@ -114,44 +118,127 @@
                             <p:graphicImage name="#{user.pictureID}" width="40"/>
                         </p:column>
                         <p:column>
-
-
                             <p:commandButton id="deleteButton" icon="ui-icon-trash" value="Remove"
                                              title="Remove"
                                              actionListener="#{controller.removeUser(user.id, index)}" 
-                                            update="UserTable" />
-                         
-                            
-                        
-
+                                             update="dt" />
                         </p:column>
 
                     </p:dataTable>
-           <p:dialog header="Add new user" widgetVar="add" minHeight="40">
-                            <h:outputText value="Enter a new user information" />
-                            <p:panelGrid  columns="2">
 
-                                <p:outputLabel value="User Name"/> 
-                                <p:inputText value="#{controller.newUsername}"/>
-                                <p:outputLabel value="Password"/> 
-                                <p:inputText value="#{controller.newPassword}"/>
 
-                                <p:outputLabel value="Type of user (0-2)"/> 
-                                <p:inputText value="#{controller.newType}"/>
-                                <p:outputLabel value="User Email"/> 
-                                <p:inputText value="#{controller.newEmail}"/>
-                                <p:outputLabel value="Legal Name"/> 
-                                <p:inputText value="#{controller.nameOfUser}"/>
-                                <p:outputLabel value="User PictureID"/> 
-                                <p:inputText value="#{controller.pictureID}"/>
-                                <p:outputLabel value="User Phone"/> 
-                                <p:inputText value="#{controller.phoneNumber}"/>
-                                <p:commandButton value="Submit" actionListener="#{controller.createUser()}" onclick="PF('add').hide();" update="UserTable"/>
-                                    
-                               
-                            </p:panelGrid>
-                        </p:dialog>
+                    <p:dialog header="Add new user" widgetVar="add" minHeight="40">
+                        <h:outputText value="Enter a new user information" />
+                        <p:panelGrid  columns="2">
+
+                            <p:outputLabel value="User Name"/> 
+                            <p:inputText value="#{controller.newUsername}"/>
+                            <p:outputLabel value="Password"/> 
+                            <p:inputText value="#{controller.newPassword}"/>
+
+                            <p:outputLabel value="Type of user (0-2)"/> 
+                            <p:inputText value="#{controller.newType}"/>
+                            <p:outputLabel value="User Email"/> 
+                            <p:inputText value="#{controller.newEmail}"/>
+                            <p:outputLabel value="Legal Name"/> 
+                            <p:inputText value="#{controller.nameOfUser}"/>
+                            <p:outputLabel value="User PictureID"/> 
+                            <p:inputText value="#{controller.pictureID}"/>
+                            <p:outputLabel value="User Phone"/> 
+                            <p:inputText value="#{controller.phoneNumber}"/>
+                            <p:commandButton value="Submit" action="#{controller.createUser()}" onclick="PF('add').hide();" update="@form"/>
+
+                        </p:panelGrid>
+                    </p:dialog>
+
                 </p:panel>
+
+                <h:form id="f3">
+                    <p:dialog header="Resultt" widgetVar="result" minHeight="40"  >
+                        <p:dataTable cellSeparator="true" editMode="cell" editable="true" id="su" var="suser" value="#{controller.usersList}" paginator="true" rows="10" rowIndexVar="index1">
+                            <p:ajax event ="cellEdit" listener="#{controller.editUser(user)}" update="su"/>
+
+                            <p:column headerText="User ID">
+
+                                <h:outputText value="#{suser.id}" />
+
+                            </p:column>
+
+                            <p:column headerText="UserName">
+                                <p:cellEditor>
+
+                                    <f:facet name="output"><h:outputText value="#{suser.username}" /></f:facet>
+                                    <f:facet name="input"> <h:inputText value="#{suser.username}" /></f:facet>
+
+                                </p:cellEditor>
+
+                            </p:column>
+
+
+                            <p:column headerText="User type">
+                                <p:cellEditor>
+
+                                    <f:facet name="output"><h:outputText value="#{controller.getType(suser.type)}" /> </f:facet>
+                                    <f:facet name="input"> <h:inputText value="#{suser.type}" /></f:facet>
+
+                                </p:cellEditor>
+
+                            </p:column>
+
+
+
+                            <p:column headerText="Phone">
+                                <p:cellEditor>
+
+                                    <f:facet name="output"> <h:outputText value="#{suser.phone}" /></f:facet>
+                                    <f:facet name="input"> <h:inputText value="#{suser.phone}" /></f:facet>
+
+                                </p:cellEditor>
+
+                            </p:column>
+
+
+                            <p:column headerText="Email ">
+                                <p:cellEditor>
+
+                                    <f:facet name="output"> <h:outputText value="#{suser.email}" /></f:facet>
+                                    <f:facet name="input"> <h:inputText value="#{suser.email}" /></f:facet>
+
+                                </p:cellEditor>
+
+                            </p:column>
+
+
+                            <p:column headerText="Name">
+                                <p:cellEditor>
+
+                                    <f:facet name="output"> <h:outputText value="#{suser.name}"/> </f:facet>
+                                    <f:facet name="input"> <h:inputText value="#{suser.name}" /></f:facet>
+
+                                </p:cellEditor>
+                            </p:column>
+
+
+
+                            <p:column headerText="Picture">
+                                <p:graphicImage name="#{suser.pictureID}" width="40"/>
+                            </p:column>
+                            <p:column>
+
+
+                                <p:commandButton id="db" icon="ui-icon-trash" value="Remove"
+                                                 title="Remove"
+                                                 actionListener="#{controller.removeUser(suser.id, index1)}" 
+                                                 update="@form" />
+
+
+
+
+                            </p:column>
+
+                        </p:dataTable>
+                    </p:dialog>
+                </h:form>
                 <p:outputPanel style="text-align: center; background-color:white; vertical-align: middle; height:100%; padding-top: 250px;" >
 
 

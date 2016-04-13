@@ -23,6 +23,7 @@ import query.TasksController;
 import query.UsersController;
 import query.WorkScheduleController;
 import query.exceptions.NonexistentEntityException;
+import query.exceptions.PreexistingEntityException;
 
 /**
  *
@@ -36,7 +37,9 @@ public class Controller {
     private int type = -10;
     private Plants selectedPlant;
     private long userID;
+    private String fusername;
 
+    private Tasks tasks = new Tasks();
     
 
     private UsersController uController = new UsersController();
@@ -62,7 +65,7 @@ public class Controller {
     private int NewType;
     private String NewEmail;
     private String NameOfUser;
-    private String PictureID;
+    private String PictureID = "Unknown";
     private String PhoneNumber;
     
     private String newGen;
@@ -72,18 +75,60 @@ public class Controller {
     private String newTableP;
     private String newOtherN;
     private Users AssignUser;
-    private  List<Plants> result = new LinkedList();
-    private String a;//a search variable
+    private Tasks AssignTask;
+    private Users TaskToUser;
+    private CharSequence forgotuserID;
+    private String returnPass;
+
+    public Tasks getAssignTask() {
+        return AssignTask;
+    }
+
+    public void setAssignTask(Tasks AssignTask) {
+        this.AssignTask = AssignTask;
+    }
+
+    public Users getTaskToUser() {
+        return TaskToUser;
+    }
+
+    public void setTaskToUser(Users TaskToUser) {
+        this.TaskToUser = TaskToUser;
+    }
+
+    public String getFusername() {
+        return fusername;
+    }
+
+    public void setFusername(String fusername) {
+        this.fusername = fusername;
+    }
     
-    private String SearTerm;
-
-    public String getSearTerm() {
-        return SearTerm;
+    
+    
+    
+    private  List<Plants> result = new LinkedList();
+    private  List<Users> userresult = new LinkedList();
+    private String a;//a search variable for the plants
+    private String SU; //A search variable for the users
+    private  List<Tasks> wtask = new LinkedList();
+    public List<Users> getUserresult() {
+        return userresult;
     }
 
-    public void setSearTerm(String SearTerm) {
-        this.SearTerm = SearTerm;
+    public void setUserresult(List<Users> userresult) {
+        this.userresult = userresult;
     }
+
+    public String getSU() {
+        return SU;
+    }
+
+    public void setSU(String SU) {
+        this.SU = SU;
+    }
+    
+
     
     
 
@@ -95,7 +140,24 @@ public class Controller {
         this.userID = userID;
     }
 
-    
+    public void searchUser(){
+        
+        //Plants p = new Plants();
+      
+        System.out.println("searching ...");
+        
+        result.clear();
+        for(Users str :usersList){
+            if(str.toString().contains(SU)){
+                 System.out.println(str);
+                userresult.add(str);
+            //    S = str.getGenus();
+              //  return S;
+            }
+        }
+        
+        //return "Could not find plant";
+    }
     public void searchPant(){
         
         //Plants p = new Plants();
@@ -299,7 +361,7 @@ public class Controller {
 
     public void removePlant(int ID, int index) {
         try {
-            System.out.println("removeplant remove plant rempppppppfijdsjdkjss");
+            System.out.println("removeplant remove plant ");
 
             pController.destroy(ID);
             plantList.remove(index);
@@ -345,6 +407,15 @@ public class Controller {
         }
     }
 
+    public CharSequence getForgotuserID() {
+        return forgotuserID;
+    }
+
+    public void setForgotuserID(CharSequence forgotuserID) {
+        this.forgotuserID = forgotuserID;
+    }
+
+    
     public String getNewUsername() {
         return NewUsername;
     }
@@ -420,6 +491,7 @@ public class Controller {
         newUser.setType(NewType);
         newUser.setEmail(NewEmail);
         newUser.setPhone(PhoneNumber);
+        PictureID="Unknown";
         newUser.setPictureID(PictureID);
         newUser.setName(NameOfUser);
         
@@ -430,6 +502,36 @@ public class Controller {
          plantList = pController.findPlantsEntities();
         }catch (Exception ex) {
             StackTraceElement[] stackTrace = ex.getStackTrace();
+        }
+        
+        
+    }
+
+    public String getReturnPass() {
+        return returnPass;
+    }
+
+    public void setReturnPass(String returnPass) {
+        this.returnPass = returnPass;
+    }
+    
+    
+    public void forgotPassword(){
+        returnPass="Can't find information";
+        
+        String password1 = "non";
+          for(Users str :usersList){
+            if(str.toString().contains(fusername)&& str.toString().contains(forgotuserID)){
+                 System.out.println(str);
+                password1 = str.getPassword();
+                setReturnPass(password1);
+                returnPass=password1;
+                setReturnPass("ss");
+                System.out.println("ssssssssssssssssss"+returnPass);
+                        //    S = str.getGenus();
+                        //  return S;
+
+            }
         }
         
         
@@ -458,7 +560,7 @@ public class Controller {
     public void createTask() {
         try {
             System.out.println("creating task!");
-            Tasks tasks = new Tasks();
+            
             tasks.setEndDate(ExpectedEndDate);
             tasks.setFertilizer(FertilizerAmount);
             tasks.setOtherNotes(OtherNotes);
@@ -479,6 +581,36 @@ public class Controller {
 
     }
 
+    public void createWork(){
+        
+        WorkSchedule work = new WorkSchedule();
+        
+        
+         for(Tasks task :tasksList){
+            if(task.toString().contains((CharSequence) AssignTask)){
+                 System.out.println(task);
+                wtask.add(task);
+            //    S = str.getGenus();
+              //  return S;
+            }
+         }
+        //work.setComments();
+        work.setDate(StartDate);
+        work.setTimeOut(StartDate);
+        work.setTasks(AssignTask);
+        
+        //System.out.println("this is " + );
+        
+        work.setUserID(TaskToUser);
+        try {
+            wController.create(work);
+        } catch (PreexistingEntityException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        
+    }
     public void editWork(WorkSchedule w) {
         try {
             wController.edit(w);

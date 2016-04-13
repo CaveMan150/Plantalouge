@@ -48,34 +48,121 @@
 
                     </p:toolbar>
                 </h:form>
-                 <p:separator />
+
                 <p:outputPanel style="text-align: center; background-color:white; vertical-align: middle; height:100%; padding-top: 250px;" >
-                     Wellcome #{controller.username} !
-                    <h:form>
-                        <p:outputPanel deferred="true">
-                            <h3>student "username" Completed task</h3>
-                            <p>Finished Plant 1 task</p>
-                        </p:outputPanel>
-
-                        <div style="height:600px"></div>
 
 
-                    </h:form>
+                    <h1 style=" color: #0000cc"> Hello #{controller.username} !</h1> 
+                    <body> Below you can see a list of tasks and plants </body>
 
+                    <p:panel id="PlantsTable" header="Taks List">
+
+                        <p:dataTable cellSeparator="true" editMode="cell" editable="true" id="TaskTable" var="task" value="#{controller.tasksList}" paginator="true"    rows="10" rowIndexVar="index">
+                            <p:ajax event ="cellEdit" listener="#{controller.editTask(task)}" update="TaskTable"/>
+
+                            <p:column headerText="Task ID">
+
+                                <h:outputText value="#{task.taskID}" />
+
+                            </p:column>
+
+                            <p:column headerText="Start Date">
+                                <p:cellEditor>
+
+                                    <f:facet name="output"><h:outputText value="#{task.startDate}" /></f:facet>
+                                    <f:facet name="input"> <h:inputText value="#{task.startDate}" /></f:facet>
+
+                                </p:cellEditor>
+
+                            </p:column>
+
+
+                            <p:column headerText="End Date">
+                                <p:cellEditor>
+
+                                    <f:facet name="output"><h:outputText value="#{task.endDate}" /> </f:facet>
+                                    <f:facet name="input"> <h:inputText value="#{task.endDate}" /></f:facet>
+
+                                </p:cellEditor>
+
+                            </p:column>
+
+
+
+                            <p:column headerText="Fertilizer">
+
+
+                                <f:facet name="output"> <h:outputText value="#{task.fertilizer}" /></f:facet>
+                                <f:facet name="input"> <h:inputText value="#{task.fertilizer}" /></f:facet>
+
+
+
+                            </p:column>
+
+
+                            <p:column headerText="Water Amount ">
+
+
+                                <f:facet name="output"> <h:outputText value="#{task.waterAmount}" /></f:facet>
+                                <f:facet name="input"> <h:inputText value="#{task.waterAmount}" /></f:facet>
+
+
+
+                            </p:column>
+
+
+                            <p:column headerText="Water Time">
+
+
+                                <f:facet name="output"> <h:outputText value="#{task.waterTime}"/> </f:facet>
+                                <f:facet name="input"> <h:inputText value="#{task.waterTime}" /></f:facet>
+
+
+                            </p:column>
+
+
+
+                            <p:column headerText="Other Notes">
+
+                                <f:facet name="output"> <h:outputText value="#{task.otherNotes}" /></f:facet>
+                                <f:facet name="input"> <h:inputText value="#{task.otherNotes}" /></f:facet>
+
+
+                            </p:column>
+
+                        </p:dataTable>
+                    </p:panel>
+                    <p:panel id="PlantsTable" header="Plant List">
+                        <p:dataTable cellSeparator="true"  id="PlantsTable" var="plants" value="#{controller.plantList}" paginator="true" rows="10" rowIndexVar="index">
+
+
+                            <p:column headerText="Plant ID">
+
+                                <h:outputText value="#{plants.plantID}" />
+
+                            </p:column>
+
+                            <p:column headerText="Plant genus">
+
+
+                                <h:outputText value="#{plants.genus}" />
+
+
+
+                            </p:column>
+
+
+                            <p:column headerText="Plant ">
+
+                                <h:outputText value="#{plants.species}" />
+
+                            </p:column>
+
+                        </p:dataTable>
+
+                    </p:panel>
                 </p:outputPanel>
-                <p:dialog header="LogIn" widgetVar="LogIn" modal="true" height="200">
-                    <p:panelGrid columns="2">
 
-                        <p:outputLabel value="username:"/>
-                        <p:inputText value="#{controller.username}"/>
-                        <p:outputLabel value="Password:"/>
-                        <p:inputText value="#{controller.password}"/>
-                        <f:facet name="footer">
-                            <p:commandButton action="#{controller.loginA}" ajax="false" value="Sign In"/>
-                            <p:button outcome="index" value="Forgot Password"> </p:button>
-                        </f:facet>
-                    </p:panelGrid>
-                </p:dialog>   
 
             </h:form>
         </h:body>

@@ -5,20 +5,20 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
 
-    <f:view contentType="text/html">
+    <f:view contentType="text/html" >
         <script>
             html, body {margin:0; padding:0; height:100 % ; }
         </script>
         <h:head>
             <f:facet name="first">
                 <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
-                <title>Manage Plants</title>
+                <title> Plants</title>
             </f:facet>
 
         </h:head>
 
-        <h:body style="background-color: #0a3371; height:100%">
-            <h:form rendered="#{controller.type ==2}">
+        <h:body style="background-color: #0a3371; height:100%" onload="#{controller.accessPlantsInfo()}">
+            <h:form id="f0" rendered="#{controller.type ==2}" >
                 <p:outputPanel style="background-color: #0a3371; color: white; font-size:40px; font-weight: bold; width: 100%; height: 160px;">
                     Plantalogue
                     <br/>
@@ -26,112 +26,218 @@
                 </p:outputPanel>
 
 
-                <p:growl id="messages" showDetail="true" />
+                <p:messages autoUpdate="true" id="messages" showDetail="true"  />
 
-                <p:toolbar>
+                <p:toolbar >
                     <f:facet name="left">
                         <p:button outcome="dontatorHome" value="Home" icon="ui-icon-home" >
                         </p:button>
 
                         <p:commandButton value="Print Label" type="button" icon="ui-icon-print" >
                             <p:printer target="image" /></p:commandButton> <p:graphicImage id="image"  />
-                        <p:commandButton value="Search" type="button"  onclick="PF('dlg1').show();" />
-                        <p:dialog header="Find a plant" widgetVar="dlg1" minHeight="40" resizable="false">
-                            <p:inputText id="text"  required="false" label="text" />
-                            <p:button outcome="dontatorHome" value="Search" icon="ui-icon-search">
-                            </p:button>
-                        </p:dialog>
+                       
+                        
+                      
                         <p:commandButton rendered="#{controller.username !=null}" action ="#{controller.logout()}" ajax="false" value="LogOut" icon="ui-icon-power"/>
+                        <p:inputText id="text"  required="false" label="text"   value="#{controller.a}"  />
+                        <p:commandButton action="#{controller.searchPant()}" value="Search" icon="ui-icon-search" oncomplete="PF('result').show();" update="f3:sp"/> 
 
-
+                 
                     </f:facet>
 
 
                 </p:toolbar>
                 <p:separator />
 
-                <p:dataTable cellSeparator="true"  id="PlantsTable" var="plants" value="#{controller.plantList}" paginator="true" rows="10" rowIndexVar="index">
-                    
+              
+                <p:panel id="PlantsTable" header="Plants">
+                    <p:dataTable id="dt"  cellSeparator="true" editMode="cell" editable="true"  var="plants" value="#{controller.plantList}" paginator="true" rows="10" rowIndexVar="index">
 
-                    <p:column headerText="Plant ID">
+                        <p:column headerText="Plant ID">
 
-                        <h:outputText value="#{plants.plantID}" />
+                            <h:outputText value="#{plants.plantID}" />
 
-                    </p:column>
+                        </p:column>
 
-                    <p:column headerText="Plant genus">
-                        
-
-                         <h:outputText value="#{plants.genus}" />
+                        <p:column headerText="Plant genus">
                             
 
-                       
+                                <h:outputText value="#{plants.genus}" />
+                              
 
-                    </p:column>
-
-
-                    <p:column headerText="Plant ">
-                      
-                           <h:outputText value="#{plants.species}" />
-                 
-                    </p:column>
-
-
-
-                    <p:column headerText="Plant Label">
-                      
-                       <h:outputText value="#{plants.labels.labelName}" />
-                         
-
-                    
-
-                    </p:column>
-
-
-                    <p:column headerText="Plant table Number ">
-                       
-
-                        <h:outputText value="#{plants.tableNumber}" />
-
-                       
-                    </p:column>
-
-
-                    <p:column headerText="Plant table position">
-                     
-
-                      <h:outputText value="#{plants.tablePosition}"/>
                            
 
-                    </p:column>
+                        </p:column>
+
+
+                        <p:column headerText="species">
+                            
+
+                               <h:outputText value="#{plants.species}" />
+                              
+
+                            
+
+                        </p:column>
 
 
 
-                    <p:column headerText="Other Notes">
-                      
-                             <h:outputText value="#{plants.otherNotes}" />
+                        <p:column headerText="Plant Label">
+                            
+
+                                <h:outputText value="#{plants.labels.labelName}" />
+                                
+
                           
 
+                        </p:column>
+
+
+                        <p:column headerText="Plant table Number ">
+                         
+
+                                <h:outputText value="#{plants.tableNumber}" />
+                              
+
+                            
+                        </p:column>
+
+
+                        <p:column headerText="Plant table position">
+                            
+
+                               <h:outputText value="#{plants.tablePosition}"/> 
+                               
+                           
+                        </p:column>
+
+
+
+                        <p:column headerText="Other Notes">
+                           
+                               <h:outputText value="#{plants.otherNotes}" />
+                                
+
+                           
+                        </p:column>
+
+
+
+
+
+
+                        <p:column headerText="Donator User ID">
+                            <h:outputText value="#{plants.userID}" />
+                        </p:column>
+                        
                        
-                    </p:column>
 
+                    </p:dataTable>
+                    
 
-
-                   
-
+                </p:panel>
+                
+               
 
                
 
-                </p:dataTable>
-               
 
+
+
+
+                <h:form id="f3">
+                    <p:dialog header="Resultt" widgetVar="result" minHeight="40"  >
+                        <p:dataTable  cellSeparator="true" editMode="cell" editable="true" id="sp" var="searchp" value="#{controller.result}" paginator="true" rows="10" rowIndexVar="index1">
+                           
+
+                            <p:column headerText="Plant ID">
+
+                                <h:outputText value="#{searchp.plantID}" />
+
+                            </p:column>
+
+                            <p:column headerText="Plant genus">
+                               
+
+                                   <h:outputText value="#{searchp.genus}" />
+                                    
+
+                                
+
+                            </p:column>
+
+
+                            <p:column headerText="species">
+                               
+
+                                   <h:outputText value="#{searchp.species}" /> 
+                                    
+
+                             
+
+                            </p:column>
+
+
+
+                            <p:column headerText="Plant Label">
+                                
+                                    <h:outputText value="#{searchp.labels.labelName}" />
+                               
+
+                         
+                            </p:column>
+
+
+                            <p:column headerText="Plant table Number ">
+                              
+
+                                    <h:outputText value="#{searchp.tableNumber}" />
+                           
+
+                             
+
+                            </p:column>
+
+
+                            <p:column headerText="Plant table position">
+                               
+
+                                     <h:outputText value="#{searchp.tablePosition}"/>
+                                    
+
+                            </p:column>
+
+
+
+                            <p:column headerText="Other Notes">
+                               
+                                    <h:outputText value="#{searchp.otherNotes}" />
+                                   
+
+                               
+                            </p:column>
+
+
+
+
+
+
+                            <p:column headerText="Donator User ID">
+                                <h:outputText value="#{searchp.userID}" />
+                            </p:column>
+                            
+                        
+
+                        </p:dataTable>
+                    </p:dialog>
+                </h:form>
                 <p:outputPanel style="text-align: center; background-color:white; vertical-align: middle; height:100%; padding-top: 250px;" >
 
                 </p:outputPanel>
 
 
             </h:form>
-            <p:outputLabel  style="color:white" rendered="#{controller.type !=0}" value="OOPs!"/>
+            <p:outputLabel  style="color:white; size: 50; " rendered="#{controller.type !=2}" value="OOPS SOMETHING WENT WRONG!!"/>
         </h:body>
 
     </f:view>

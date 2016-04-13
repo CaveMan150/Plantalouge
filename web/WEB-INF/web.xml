@@ -15,7 +15,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
-        <url-pattern>/faces/*</url-pattern>
+        <url-pattern>/f/*</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
@@ -23,7 +23,11 @@
         </session-timeout>
     </session-config>
     <welcome-file-list>
-        <welcome-file>faces/index.xhtml</welcome-file>
+        <welcome-file>f/index.xhtml</welcome-file>
     </welcome-file-list>
-      
+    
+   <mime-mapping>
+    <extension>jsp</extension>
+    <mime-type>text/html</mime-type>
+  </mime-mapping>   
 </web-app>

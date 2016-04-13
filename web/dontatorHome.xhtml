@@ -36,7 +36,7 @@
                             
                             <p:button outcome="MyPlants" value="My Plants" icon="ui-icon-gear">
                             </p:button>
-                           
+                            
                            
                             <p:commandButton  rendered="#{controller.username !=null}" action ="#{controller.logout()}" ajax="false" value="LogOut" icon="ui-icon-power"/>
 
@@ -47,32 +47,180 @@
                 </h:form>
                  <p:separator />
                 <p:outputPanel style="text-align: center; background-color:white; vertical-align: middle; height:100%; padding-top: 250px;" >
-                    Wellcome #{controller.username} !!!!
-                    
-                    <h:form>
-                        <p:outputPanel deferred="true">
-                          
-                        </p:outputPanel>
+            
 
-                        <div style="height:600px"></div>
+                    <h:form>
+                         <h1 style=" color: #0000cc"> Hello #{controller.username} !</h1> 
+                    <body> Below you can see a list of tasks and plants </body>
+
+                    <p:panel id="t" header="Taks List">
+
+                        <p:dataTable cellSeparator="true" editMode="cell" editable="true" id="TaskTable" var="task" value="#{controller.tasksList}" paginator="true"    rows="10" rowIndexVar="index">
+                          
+
+                            <p:column headerText="Task ID">
+
+                                <h:outputText value="#{task.taskID}" />
+
+                            </p:column>
+
+                            <p:column headerText="Start Date">
+                             
+                                 <h:outputText value="#{task.startDate}" />
+                                    
+
+                              
+                            </p:column>
+
+
+                            <p:column headerText="End Date">
+                                
+
+                                 <h:outputText value="#{task.endDate}" />
+                                   
+
+                            
+                            </p:column>
+
+
+
+                            <p:column headerText="Fertilizer">
+
+
+                               <h:outputText value="#{task.fertilizer}" />
+                              
+
+
+
+                            </p:column>
+
+
+                            <p:column headerText="Water Amount ">
+
+
+                              <h:outputText value="#{task.waterAmount}" />
+                            <h:inputText value="#{task.waterAmount}" />
+
+
+
+                            </p:column>
+
+
+                            <p:column headerText="Water Time">
+
+
+                         <h:outputText value="#{task.waterTime}"/> 
+                             
+
+
+                            </p:column>
+
+
+
+                            <p:column headerText="Other Notes">
+
+                            <h:outputText value="#{task.otherNotes}" />
+                               
+
+                            </p:column>
+
+                        </p:dataTable>
+                    </p:panel>
+                    
+                     <p:panel id="PlantsTable" header="Plants">
+                    <p:dataTable id="dt"  cellSeparator="true" editMode="cell" editable="true"  var="plants" value="#{controller.plantList}" paginator="true" rows="10" rowIndexVar="index">
+
+                        <p:column headerText="Plant ID">
+
+                            <h:outputText value="#{plants.plantID}" />
+
+                        </p:column>
+
+                        <p:column headerText="Plant genus">
+                            
+
+                                <h:outputText value="#{plants.genus}" />
+                              
+
+                           
+
+                        </p:column>
+
+
+                        <p:column headerText="species">
+                            
+
+                               <h:outputText value="#{plants.species}" />
+                              
+
+                            
+
+                        </p:column>
+
+
+
+                        <p:column headerText="Plant Label">
+                            
+
+                                <h:outputText value="#{plants.labels.labelName}" />
+                                
+
+                          
+
+                        </p:column>
+
+
+                        <p:column headerText="Plant table Number ">
+                         
+
+                                <h:outputText value="#{plants.tableNumber}" />
+                              
+
+                            
+                        </p:column>
+
+
+                        <p:column headerText="Plant table position">
+                            
+
+                               <h:outputText value="#{plants.tablePosition}"/> 
+                               
+                           
+                        </p:column>
+
+
+
+                        <p:column headerText="Other Notes">
+                           
+                               <h:outputText value="#{plants.otherNotes}" />
+                                
+
+                           
+                        </p:column>
+
+
+
+
+
+
+                        <p:column headerText="Donator User ID">
+                            <h:outputText value="#{plants.userID}" />
+                        </p:column>
+                        
+                       
+
+                    </p:dataTable>
+                    
+
+                </p:panel>
+                
+               
+
 
 
                     </h:form>
 
-                </p:outputPanel>
-                <p:dialog header="LogIn" widgetVar="LogIn" modal="true" height="200">
-                    <p:panelGrid columns="2">
-
-                        <p:outputLabel value="username:"/>
-                        <p:inputText value="#{controller.username}"/>
-                        <p:outputLabel value="Password:"/>
-                        <p:inputText value="#{controller.password}"/>
-                        <f:facet name="footer">
-                            <p:commandButton action="#{controller.loginA}" ajax="false" value="Sign In"/>
-                            <p:button outcome="index" value="Forgot Password"> </p:button>
-                        </f:facet>
-                    </p:panelGrid>
-                </p:dialog>   
+                </p:outputPanel>   
 
             </h:form>
         </h:body>

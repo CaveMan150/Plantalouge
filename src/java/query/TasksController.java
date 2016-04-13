@@ -57,6 +57,22 @@ public class TasksController implements Serializable {
         }
     }
 
+    
+       public Tasks findT(String value) {
+        try
+       {
+           EntityManager em = getEntityManager();
+           Tasks task=em.createNamedQuery("Users.findByUsername", Tasks.class).setParameter("Task_ID", value).getSingleResult();
+           if(task==null)
+               return null;
+            return task;
+       }
+       catch (Exception e)
+       {
+            return null;
+       }
+    }
+    
     public void edit(Tasks tasks) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
