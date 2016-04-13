@@ -9,8 +9,8 @@
     <class>EntityBeans.Plants</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
-      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/san3ani_plant?zeroDateTimeBehavior=convertToNull"/>
-      <property name="javax.persistence.jdbc.user" value="san3ani_root"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/falbella_plant?zeroDateTimeBehavior=convertToNull"/>
+      <property name="javax.persistence.jdbc.user" value="falbella_root"/>
       <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
       <property name="javax.persistence.jdbc.password" value="123321"/>
     </properties>

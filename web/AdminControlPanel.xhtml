@@ -48,7 +48,7 @@
 
                     </p:toolbar>
                 </h:form>
-
+                <p:separator />
                 <p:outputPanel style="text-align: center; background-color:white; vertical-align: middle; height:100%; padding-top: 250px;" >
 
 
@@ -58,7 +58,7 @@
                     <p:panel id="PlantsTable2" header="Taks List">
 
                         <p:dataTable cellSeparator="true" editMode="cell" editable="true" id="TaskTable" var="task" value="#{controller.tasksList}" paginator="true"    rows="10" rowIndexVar="index">
-                            <p:ajax event ="cellEdit" listener="#{controller.editTask(task)}" update="TaskTable"/>
+
 
                             <p:column headerText="Task ID">
 
@@ -67,23 +67,22 @@
                             </p:column>
 
                             <p:column headerText="Start Date">
-                                <p:cellEditor>
 
-                                    <f:facet name="output"><h:outputText value="#{task.startDate}" /></f:facet>
-                                    <f:facet name="input"> <h:inputText value="#{task.startDate}" /></f:facet>
 
-                                </p:cellEditor>
+                                <h:outputText value="#{task.startDate}" />
+
+
+
 
                             </p:column>
 
 
                             <p:column headerText="End Date">
-                                <p:cellEditor>
 
-                                    <f:facet name="output"><h:outputText value="#{task.endDate}" /> </f:facet>
-                                    <f:facet name="input"> <h:inputText value="#{task.endDate}" /></f:facet>
 
-                                </p:cellEditor>
+                                <h:outputText value="#{task.endDate}" />
+
+
 
                             </p:column>
 
@@ -92,8 +91,8 @@
                             <p:column headerText="Fertilizer">
 
 
-                                <f:facet name="output"> <h:outputText value="#{task.fertilizer}" /></f:facet>
-                                <f:facet name="input"> <h:inputText value="#{task.fertilizer}" /></f:facet>
+                                <h:outputText value="#{task.fertilizer}" />
+
 
 
 
@@ -103,8 +102,8 @@
                             <p:column headerText="Water Amount ">
 
 
-                                <f:facet name="output"> <h:outputText value="#{task.waterAmount}" /></f:facet>
-                                <f:facet name="input"> <h:inputText value="#{task.waterAmount}" /></f:facet>
+                                <h:outputText value="#{task.waterAmount}" />
+
 
 
 
@@ -114,8 +113,7 @@
                             <p:column headerText="Water Time">
 
 
-                                <f:facet name="output"> <h:outputText value="#{task.waterTime}"/> </f:facet>
-                                <f:facet name="input"> <h:inputText value="#{task.waterTime}" /></f:facet>
+                                <h:outputText value="#{task.waterTime}"/>
 
 
                             </p:column>
@@ -124,8 +122,8 @@
 
                             <p:column headerText="Other Notes">
 
-                                <f:facet name="output"> <h:outputText value="#{task.otherNotes}" /></f:facet>
-                                <f:facet name="input"> <h:inputText value="#{task.otherNotes}" /></f:facet>
+                                <h:outputText value="#{task.otherNotes}" />
+
 
 
                             </p:column>
