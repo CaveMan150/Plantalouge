@@ -24,6 +24,10 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import org.apache.commons.mail.DefaultAuthenticator;
+import org.apache.commons.mail.Email;
+import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.SimpleEmail;
 import org.primefaces.event.FileUploadEvent;
 import query.LabelsController;
 import query.PlantsController;
@@ -46,7 +50,7 @@ public class Controller {
     private int type = -10;
     private Plants selectedPlant;
     private long userID;
-    private String fusername;
+    private Users fusername;
 
     private Tasks tasks = new Tasks();
 
@@ -85,9 +89,29 @@ public class Controller {
     private Users AssignUser;
     private Tasks AssignTask;
     private Users TaskToUser;
-    private CharSequence forgotuserID;
+    private String ForgotEmail;
+    private String ForUser;
     private String returnPass;
     private Users SelectedUser;
+
+    public String getForUser() {
+        return ForUser;
+    }
+
+    public void setForUser(String ForUser) {
+        this.ForUser = ForUser;
+    }
+
+    
+    
+    
+    public String getForgotEmail() {
+        return ForgotEmail;
+    }
+
+    public void setForgotEmail(String ForgotEmail) {
+        this.ForgotEmail = ForgotEmail;
+    }
 
     public Users getSelectedUser() {
         return SelectedUser;
@@ -96,14 +120,12 @@ public class Controller {
     public void setSelectedUser(Users SelectedUser) {
         this.SelectedUser = SelectedUser;
     }
-    
-    
-    
+
     public void handleFileUpload(FileUploadEvent event) {
         FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
 
         FacesContext.getCurrentInstance().addMessage(null, message);
-        Path uploadFolder = Paths.get("/wamp64/www");
+        Path uploadFolder = Paths.get("D:\\wamp64/www");
         String fn = event.getFile().getFileName();
         int index = fn.indexOf(".");
         if (index < 0) {
@@ -111,7 +133,7 @@ public class Controller {
         }
         String ext = fn.substring(index);
         String fileName = fn.substring(0, index);
-        Path file=null;
+        Path file = null;
         try {
             file = Files.createTempFile(uploadFolder, fileName, ext);
             InputStream input = event.getFile().getInputstream();
@@ -120,11 +142,42 @@ public class Controller {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        int userIndex =Integer.parseInt(event.getComponent().getAttributes().get("user").toString());
-        SelectedUser=this.usersList.get(userIndex);
-        SelectedUser.setPictureID("http://localhost/"+ file.getFileName());
+        int userIndex = Integer.parseInt(event.getComponent().getAttributes().get("user").toString());
+        SelectedUser = this.usersList.get(userIndex);
+        SelectedUser.setPictureID("http://localhost/" + file.getFileName());
         System.out.println(SelectedUser.getPictureID());
-      
+
+    }
+
+    public void h() {
+
+        Users u = new Users();
+        u= uController.findU(ForUser);
+        
+        System.out.println(u.getEmail());
+        if(u.getEmail().equals(ForgotEmail)){
+                
+        
+        System.out.println("  Called email forgotpass ");
+        Email email = new SimpleEmail();
+        email.setHostName("smtp.googlemail.com");
+        email.setSmtpPort(465);
+        email.setAuthenticator(new DefaultAuthenticator("falbellaihi12345", "Faisal!1"));
+        email.setSSLOnConnect(true);
+        try {
+            email.setFrom("falbellaihi12345@gmail.com");
+            email.setSubject("Reset Plantalouge Password!");
+            email.setMsg(u.getName()+" Hello!, Here is your login information "+u.getUsername()+" "+u.getPassword());
+            email.addTo("falbellaihi@hotmail.com");
+            email.send();
+        } catch (EmailException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        }
+        else {
+            System.out.println("Email not matched with user record");
+        }
     }
 
     public Tasks getAssignTask() {
@@ -143,11 +196,11 @@ public class Controller {
         this.TaskToUser = TaskToUser;
     }
 
-    public String getFusername() {
+    public Users getFusername() {
         return fusername;
     }
 
-    public void setFusername(String fusername) {
+    public void setFusername(Users fusername) {
         this.fusername = fusername;
     }
 
@@ -413,7 +466,7 @@ public class Controller {
 
             //   return ID;
         } catch (NonexistentEntityException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+           ex.printStackTrace();
         }
     }
 
@@ -428,14 +481,6 @@ public class Controller {
         } catch (NonexistentEntityException ex) {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    public CharSequence getForgotuserID() {
-        return forgotuserID;
-    }
-
-    public void setForgotuserID(CharSequence forgotuserID) {
-        this.forgotuserID = forgotuserID;
     }
 
     public String getNewUsername() {
@@ -503,7 +548,7 @@ public class Controller {
     }
 
     public void createUser() {
-
+        System.out.println("called create user");
         try {
             Users newUser = new Users();
             newUser.setUsername(NewUsername);
@@ -532,26 +577,6 @@ public class Controller {
 
     public void setReturnPass(String returnPass) {
         this.returnPass = returnPass;
-    }
-
-    public void forgotPassword() {
-        returnPass = "Can't find information";
-
-        String password1 = "non";
-        for (Users str : usersList) {
-            if (str.toString().contains(fusername) && str.toString().contains(forgotuserID)) {
-                System.out.println(str);
-                password1 = str.getPassword();
-                setReturnPass(password1);
-                returnPass = password1;
-                setReturnPass("ss");
-                System.out.println("ssssssssssssssssss" + returnPass);
-                //    S = str.getGenus();
-                //  return S;
-
-            }
-        }
-
     }
 
     public void createPlant() {

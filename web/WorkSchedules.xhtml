@@ -35,7 +35,7 @@
 
                         <p:commandButton value="Print Label" type="button" icon="ui-icon-print" >
                             <p:printer target="image" /></p:commandButton> <p:graphicImage id="image"  />
-                       
+
                         <p:commandButton rendered="#{controller.username !=null}" action ="#{controller.logout()}" ajax="false" value="LogOut" icon="ui-icon-power"/>
 
 
@@ -180,10 +180,12 @@
 
                         <p:column headerText="Water Time">
                             <p:cellEditor>
+                                
 
-                                <f:facet name="output"> <h:outputText value="#{task.waterTime}"/> </f:facet>
-                                <f:facet name="input"> <h:inputText value="#{task.waterTime}" /></f:facet>
 
+                                    <f:facet name="output"> <h:outputText value="#{task.waterTime}"/> </f:facet>
+                                    <f:facet name="input"> <h:inputText value="#{task.waterTime}" /></f:facet>
+                               
                             </p:cellEditor>
                         </p:column>
 
@@ -199,9 +201,9 @@
 
                         <p:column>
 
-                            <p:commandButton value="" title="Assign Task" onclick="PF('TaskDG').show();"/>
-                            
-                            
+                            <p:commandButton value="" title="Assign Task"/>
+
+
 
                         </p:column>
 
@@ -218,30 +220,9 @@
                 </p:panel>
 
 
-                <h:form id="f1" > 
-                    <p:dialog widgetVar="TaskDG"  header="Add new Task" >
-                        <p:panelGrid  columns="3" >
-                            
-                                <p:selectOneMenu id="AssignUser"  value="#{controller.assignUser}" style="width:150px" converter="UConverter">
-                                    <f:selectItems value="#{controller.usersList}"  var="user" itemLabel="#{user.username}"/>
 
-                                </p:selectOneMenu >
-                                
-                           
-                                <p:selectOneMenu id="assignTask"  value="#{controller.assignTask}" style="width:150px" converter="UConverter">
-                                     <f:selectItems value="#{controller.tasksList}"  var="task" itemLabel="#{task.taskID}" />
 
-                                </p:selectOneMenu >
 
-                                <p:commandButton value="Submit"  actionListener="#{controller.createWork()}" onclick="PF('TaskDG').hide();" update="@form"/>
-                        
-                        </p:panelGrid>
-                        
-                        
-                    </p:dialog>
-                </h:form>
-                
-                
                 <p:outputPanel style="text-align: center; background-color:white; vertical-align: middle; height:100%; padding-top: 250px;" >
 
                 </p:outputPanel>

@@ -143,7 +143,7 @@
 
 
                     <p:dialog header="Add new user" widgetVar="add" minHeight="40">
-                        <h:form>
+                        
                         <h:outputText value="Enter a new user information" />
                         <p:panelGrid  columns="2">
 
@@ -161,14 +161,13 @@
 
                             <p:outputLabel value="User Phone" /> 
                             <p:inputText value="#{controller.phoneNumber}" required="true" requiredMessage="Phone is required" />
-                            <p:outputLabel value="User PictureID"/> 
-                         <!--<p:inputText value="#{controller.pictureID}"/>-->
+                          
 
 
 
                             <p:commandButton value="Submit" action="#{controller.createUser()}" oncomplete="PF('add').hide();" update="@form"/>
                         </p:panelGrid>
-                        </h:form>
+                    
 
                     </p:dialog>
 
