@@ -40,6 +40,15 @@ if mysql connector jar file that was included within this project does not work 
 
 
 
+You need to add JSF 2.2 Library by doing the following:
+1- in Projects tab find Libraries
+2- Right click and choose  "Add library..."
+3- Find JSF 2.2 and click add library
 
+You need Primeface 5.3 jar file which is included in this repository, after you download the jar file do the following:
+
+1- in Projects tab find Libraries
+2- Right click and choose  "Add JAR/Folder..."
+3- Navigate to primeface 5.3 and click open.
 
 
