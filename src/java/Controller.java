@@ -9,14 +9,22 @@ import EntityBeans.Plants;
 import EntityBeans.Tasks;
 import EntityBeans.Users;
 import EntityBeans.WorkSchedule;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import org.primefaces.event.FileUploadEvent;
 import query.LabelsController;
 import query.PlantsController;
 import query.TasksController;
@@ -32,6 +40,7 @@ import query.exceptions.PreexistingEntityException;
 @ManagedBean
 @SessionScoped
 public class Controller {
+
     private String username;
     private String password;
     private int type = -10;
@@ -40,7 +49,6 @@ public class Controller {
     private String fusername;
 
     private Tasks tasks = new Tasks();
-    
 
     private UsersController uController = new UsersController();
     private List<Users> usersList;
@@ -59,7 +67,7 @@ public class Controller {
     private Date StartDate;
     private Date ExpectedEndDate;
     private String OtherNotes;
-   
+
     private String NewUsername;
     private String NewPassword;
     private int NewType;
@@ -67,7 +75,7 @@ public class Controller {
     private String NameOfUser;
     private String PictureID = "Unknown";
     private String PhoneNumber;
-    
+
     private String newGen;
     private String newSpec;
     private String NewPic;
@@ -79,6 +87,45 @@ public class Controller {
     private Users TaskToUser;
     private CharSequence forgotuserID;
     private String returnPass;
+    private Users SelectedUser;
+
+    public Users getSelectedUser() {
+        return SelectedUser;
+    }
+
+    public void setSelectedUser(Users SelectedUser) {
+        this.SelectedUser = SelectedUser;
+    }
+    
+    
+    
+    public void handleFileUpload(FileUploadEvent event) {
+        FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
+
+        FacesContext.getCurrentInstance().addMessage(null, message);
+        Path uploadFolder = Paths.get("/wamp64/www");
+        String fn = event.getFile().getFileName();
+        int index = fn.indexOf(".");
+        if (index < 0) {
+            return;
+        }
+        String ext = fn.substring(index);
+        String fileName = fn.substring(0, index);
+        Path file=null;
+        try {
+            file = Files.createTempFile(uploadFolder, fileName, ext);
+            InputStream input = event.getFile().getInputstream();
+            Files.copy(input, file, StandardCopyOption.REPLACE_EXISTING);
+            input.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        int userIndex =Integer.parseInt(event.getComponent().getAttributes().get("user").toString());
+        SelectedUser=this.usersList.get(userIndex);
+        SelectedUser.setPictureID("http://localhost/"+ file.getFileName());
+        System.out.println(SelectedUser.getPictureID());
+      
+    }
 
     public Tasks getAssignTask() {
         return AssignTask;
@@ -103,15 +150,13 @@ public class Controller {
     public void setFusername(String fusername) {
         this.fusername = fusername;
     }
-    
-    
-    
-    
-    private  List<Plants> result = new LinkedList();
-    private  List<Users> userresult = new LinkedList();
+
+    private List<Plants> result = new LinkedList();
+    private List<Users> userresult = new LinkedList();
     private String a;//a search variable for the plants
     private String SU; //A search variable for the users
-    private  List<Tasks> wtask = new LinkedList();
+    private List<Tasks> wtask = new LinkedList();
+
     public List<Users> getUserresult() {
         return userresult;
     }
@@ -127,10 +172,6 @@ public class Controller {
     public void setSU(String SU) {
         this.SU = SU;
     }
-    
-
-    
-    
 
     public long getUserID() {
         return userID;
@@ -140,40 +181,39 @@ public class Controller {
         this.userID = userID;
     }
 
-    public void searchUser(){
-        
+    public void searchUser() {
+
         //Plants p = new Plants();
-      
         System.out.println("searching ...");
-        
+
         result.clear();
-        for(Users str :usersList){
-            if(str.toString().contains(SU)){
-                 System.out.println(str);
+        for (Users str : usersList) {
+            if (str.toString().contains(SU)) {
+                System.out.println(str);
                 userresult.add(str);
-            //    S = str.getGenus();
-              //  return S;
+                //    S = str.getGenus();
+                //  return S;
             }
         }
-        
+
         //return "Could not find plant";
     }
-    public void searchPant(){
-        
+
+    public void searchPant() {
+
         //Plants p = new Plants();
-      
         System.out.println("searching ...");
-        
+
         result.clear();
-        for(Plants str :plantList){
-            if(str.toString().contains(a)){
-                 System.out.println(str);
+        for (Plants str : plantList) {
+            if (str.toString().contains(a)) {
+                System.out.println(str);
                 result.add(str);
-            //    S = str.getGenus();
-              //  return S;
+                //    S = str.getGenus();
+                //  return S;
             }
         }
-        
+
         //return "Could not find plant";
     }
 
@@ -184,9 +224,7 @@ public class Controller {
     public void setResult(List<Plants> result) {
         this.result = result;
     }
-    
-   
-    
+
     public String getA() {
         return a;
     }
@@ -195,7 +233,6 @@ public class Controller {
         this.a = a;
     }
 
-    
     public String getNewGen() {
         return newGen;
     }
@@ -252,17 +289,6 @@ public class Controller {
         this.AssignUser = AssignUser;
     }
 
-
-    
-    
-    
-    
-    
-    
-
-   
-    
-
     public String getNameOfUser() {
         return NameOfUser;
     }
@@ -276,6 +302,7 @@ public class Controller {
     }
 
     public void setPictureID(String PictureID) {
+        System.out.println("this is pic id" + PictureID);
         this.PictureID = PictureID;
     }
 
@@ -286,9 +313,7 @@ public class Controller {
     public void setPhoneNumber(String PhoneNumber) {
         this.PhoneNumber = PhoneNumber;
     }
-    
 
-    
     public String getNewPassword() {
         return NewPassword;
     }
@@ -312,12 +337,10 @@ public class Controller {
     public void setNewEmail(String NewEmail) {
         this.NewEmail = NewEmail;
     }
+
     /**
      * Creates a new instance of Controller
      */
-    
-    
-    
     public Controller() {
 
     }
@@ -368,11 +391,11 @@ public class Controller {
 
             //   return ID;
         } catch (NonexistentEntityException ex) {
-           ex.printStackTrace();
+            ex.printStackTrace();
         }
     }
 
-    public void removeUser(int ID, int index){
+    public void removeUser(int ID, int index) {
         try {
             uController.destroy(ID);
             usersList.remove(index);
@@ -380,6 +403,7 @@ public class Controller {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     public void removeTask(int ID, int index) {
         try {
             System.out.println("remove task remove plant rempppppppfijdsjdkjss");
@@ -399,7 +423,6 @@ public class Controller {
 
             wController.destroy(ID);
             workList.remove(index);
-            
 
             //   return ID;
         } catch (NonexistentEntityException ex) {
@@ -415,7 +438,6 @@ public class Controller {
         this.forgotuserID = forgotuserID;
     }
 
-    
     public String getNewUsername() {
         return NewUsername;
     }
@@ -424,8 +446,6 @@ public class Controller {
         this.NewUsername = NewUser;
     }
 
- 
-    
     public String getWaterAmount() {
         return WaterAmount;
     }
@@ -484,27 +504,26 @@ public class Controller {
 
     public void createUser() {
 
-        try{
-        Users newUser = new Users();
-        newUser.setUsername(NewUsername);
-        newUser.setPassword(NewPassword);
-        newUser.setType(NewType);
-        newUser.setEmail(NewEmail);
-        newUser.setPhone(PhoneNumber);
-        PictureID="Unknown";
-        newUser.setPictureID(PictureID);
-        newUser.setName(NameOfUser);
-        
-        uController.create(newUser);
-        workList = wController.findWorkScheduleEntities();
-         tasksList = tController.findTasksEntities(); // retrives all the tasks from the database
-         usersList = uController.findUsersEntities(); //retrieves all the users from the database
-         plantList = pController.findPlantsEntities();
-        }catch (Exception ex) {
+        try {
+            Users newUser = new Users();
+            newUser.setUsername(NewUsername);
+            newUser.setPassword(NewPassword);
+            newUser.setType(NewType);
+            newUser.setEmail(NewEmail);
+            newUser.setPhone(PhoneNumber);
+            PictureID = "Unknown";
+            newUser.setPictureID(PictureID);
+            newUser.setName(NameOfUser);
+
+            uController.create(newUser);
+            workList = wController.findWorkScheduleEntities();
+            tasksList = tController.findTasksEntities(); // retrives all the tasks from the database
+            usersList = uController.findUsersEntities(); //retrieves all the users from the database
+            plantList = pController.findPlantsEntities();
+        } catch (Exception ex) {
             StackTraceElement[] stackTrace = ex.getStackTrace();
         }
-        
-        
+
     }
 
     public String getReturnPass() {
@@ -514,30 +533,28 @@ public class Controller {
     public void setReturnPass(String returnPass) {
         this.returnPass = returnPass;
     }
-    
-    
-    public void forgotPassword(){
-        returnPass="Can't find information";
-        
+
+    public void forgotPassword() {
+        returnPass = "Can't find information";
+
         String password1 = "non";
-          for(Users str :usersList){
-            if(str.toString().contains(fusername)&& str.toString().contains(forgotuserID)){
-                 System.out.println(str);
+        for (Users str : usersList) {
+            if (str.toString().contains(fusername) && str.toString().contains(forgotuserID)) {
+                System.out.println(str);
                 password1 = str.getPassword();
                 setReturnPass(password1);
-                returnPass=password1;
+                returnPass = password1;
                 setReturnPass("ss");
-                System.out.println("ssssssssssssssssss"+returnPass);
-                        //    S = str.getGenus();
-                        //  return S;
+                System.out.println("ssssssssssssssssss" + returnPass);
+                //    S = str.getGenus();
+                //  return S;
 
             }
         }
-        
-        
+
     }
-  
-    public void createPlant(){
+
+    public void createPlant() {
         System.out.println("creating plant!");
         Plants newPlant = new Plants();
         newPlant.setGenus(newGen);
@@ -547,20 +564,19 @@ public class Controller {
         newPlant.setTableNumber(newTableN);
         newPlant.setTablePosition(newTableP);
         newPlant.setUserID(AssignUser);
-        
-        
+
         pController.create(newPlant);
-         workList = wController.findWorkScheduleEntities();
-         tasksList = tController.findTasksEntities(); // retrives all the tasks from the database
-         usersList = uController.findUsersEntities(); //retrieves all the users from the database
-         plantList = pController.findPlantsEntities();
-         
-    
+        workList = wController.findWorkScheduleEntities();
+        tasksList = tController.findTasksEntities(); // retrives all the tasks from the database
+        usersList = uController.findUsersEntities(); //retrieves all the users from the database
+        plantList = pController.findPlantsEntities();
+
     }
+
     public void createTask() {
         try {
             System.out.println("creating task!");
-            
+
             tasks.setEndDate(ExpectedEndDate);
             tasks.setFertilizer(FertilizerAmount);
             tasks.setOtherNotes(OtherNotes);
@@ -570,37 +586,35 @@ public class Controller {
             tasks.setPlantID(selectedPlant);
             //tasks.setWorkSchedule(workSchedule);
             tController.create(tasks);
-         workList = wController.findWorkScheduleEntities();
-         tasksList = tController.findTasksEntities(); // retrives all the tasks from the database
-         usersList = uController.findUsersEntities(); //retrieves all the users from the database
-         plantList = pController.findPlantsEntities();
-        
+            workList = wController.findWorkScheduleEntities();
+            tasksList = tController.findTasksEntities(); // retrives all the tasks from the database
+            usersList = uController.findUsersEntities(); //retrieves all the users from the database
+            plantList = pController.findPlantsEntities();
+
         } catch (Exception ex) {
-           ex.printStackTrace();
+            ex.printStackTrace();
         }
 
     }
 
-    public void createWork(){
-        
+    public void createWork() {
+
         WorkSchedule work = new WorkSchedule();
-        
-        
-         for(Tasks task :tasksList){
-            if(task.toString().contains((CharSequence) AssignTask)){
-                 System.out.println(task);
+
+        for (Tasks task : tasksList) {
+            if (task.toString().contains((CharSequence) AssignTask)) {
+                System.out.println(task);
                 wtask.add(task);
-            //    S = str.getGenus();
-              //  return S;
+                //    S = str.getGenus();
+                //  return S;
             }
-         }
+        }
         //work.setComments();
         work.setDate(StartDate);
         work.setTimeOut(StartDate);
         work.setTasks(AssignTask);
-        
+
         //System.out.println("this is " + );
-        
         work.setUserID(TaskToUser);
         try {
             wController.create(work);
@@ -609,8 +623,9 @@ public class Controller {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        
+
     }
+
     public void editWork(WorkSchedule w) {
         try {
             wController.edit(w);
@@ -704,19 +719,17 @@ public class Controller {
 
     public String login() {
         System.out.println("\n\n\n test test " + username + " -- " + password);
-         workList = wController.findWorkScheduleEntities();
-         tasksList = tController.findTasksEntities(); // retrives all the tasks from the database
-         usersList = uController.findUsersEntities(); //retrieves all the users from the database
-         plantList = pController.findPlantsEntities();
+        workList = wController.findWorkScheduleEntities();
+        tasksList = tController.findTasksEntities(); // retrives all the tasks from the database
+        usersList = uController.findUsersEntities(); //retrieves all the users from the database
+        plantList = pController.findPlantsEntities();
         Users user = uController.login(username, password, type);
         if (user == null) {
             return null;
-            
+
         } else {
             System.out.println("\n\n\n test test ");
-           
-           
-           
+
             switch (type) {
                 case 0:
 
@@ -732,29 +745,30 @@ public class Controller {
 
         }
     }
-    
-    public void accessPlantsInfo(){
-         plantList = pController.findPlantsEntities();
-        
-        
+
+    public void accessPlantsInfo() {
+        plantList = pController.findPlantsEntities();
+
     }
-    public void accessUserInfo(){
-        
-         usersList = uController.findUsersEntities(); //retrieves all the users from the database
-        
+
+    public void accessUserInfo() {
+
+        usersList = uController.findUsersEntities(); //retrieves all the users from the database
+
     }
-    public void accessTasksInfo(){
+
+    public void accessTasksInfo() {
         tasksList = tController.findTasksEntities(); // retrives all the tasks from the database
 
-        
     }
-    public void accessWorkInfo(){
-        
-         workList = wController.findWorkScheduleEntities();
+
+    public void accessWorkInfo() {
+
+        workList = wController.findWorkScheduleEntities();
     }
 
     public String logout() {
-
+        System.out.println("bye ");
         username = null;
         password = null;
         type = -10;
@@ -762,8 +776,5 @@ public class Controller {
         return "index.xhtml";
 
     }
-    
-    
-    
-    
+
 }

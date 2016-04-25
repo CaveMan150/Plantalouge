@@ -35,13 +35,7 @@
 
                         <p:commandButton value="Print Label" type="button" icon="ui-icon-print" >
                             <p:printer target="image" /></p:commandButton> <p:graphicImage id="image"  />
-                        <p:commandButton value="Search" type="button"  onclick="PF('dlg1').show();" />
-                        <p:dialog header="Find a plant" widgetVar="dlg1" minHeight="40" resizable="false">
-                            <p:inputText id="text"  required="false" label="text" />
-                            <p:commandButton action="#{controller.plantList}" value="Search" icon="ui-icon-search">
-                            </p:commandButton>
-                            
-                        </p:dialog>
+                        
                         <p:commandButton rendered="#{controller.username !=null}" action ="#{controller.logout()}" ajax="false" value="LogOut" icon="ui-icon-power"/>
 
 
