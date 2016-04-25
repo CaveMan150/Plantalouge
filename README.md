@@ -63,6 +63,9 @@ SDD is the System design Document.
 Both of these files are included in this folder
 
 
+The application is also available on this link:
+http://192.232.212.121:8080/Plantalogue/f/index.xhtml
+
 You are all set! you should be able to run the application now.
 
 
