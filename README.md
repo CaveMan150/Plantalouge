@@ -57,5 +57,12 @@ You need email jar files which is also included in this repository do the follow
 3-Right click -> Add jar file -> locate to commons-email-1.4 ->"commons-email-1.4.jar" ->open
 4-Right click on Libraries again -> locate to javamail-1.4.5 -> "mail.jar" -> open
 
+NOTE!:
+SRS is the System Requirement specification
+SDD is the System design Document. 
+Both of these files are included in this folder
+
+
 You are all set! you should be able to run the application now.
+
 
