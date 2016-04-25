@@ -51,4 +51,11 @@ You need Primeface 5.3 jar file which is included in this repository, after you 
 2- Right click and choose  "Add JAR/Folder..."
 3- Navigate to primeface 5.3 and click open.
 
+You need email jar files which is also included in this repository do the following:
+1- Download both "commons-email-1.4-bin.zip" and javamail1_4_5.zip"
+2- unzip them and go to projects tab -> libraries
+3-Right click -> Add jar file -> locate to commons-email-1.4 ->"commons-email-1.4.jar" ->open
+4-Right click on Libraries again -> locate to javamail-1.4.5 -> "mail.jar" -> open
+
+You are all set! you should be able to run the application now.
 
